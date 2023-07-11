@@ -17,8 +17,8 @@ class TakleefController extends Controller
     }
     public function index()
     {
-        $takleefs = Takleef::paginate(5);
-        return view('Takleef.index', compact('takleefs'));
+
+        return view('Takleef.index');
     }
     public function takleefList($number)
     {

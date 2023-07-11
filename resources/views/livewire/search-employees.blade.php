@@ -1,8 +1,9 @@
 <div class="mt-10">
     <div class="flex flex-col justify-center items-center bg-cyan-700 ">
         <label for="search " class="block text-white mt-4">ابحث بكتابة رقم الملف الخاص بالموظف</label>
-        <input type="text" wire:model="search" placeholder="Search by employee file No"
+        <input type="text" wire:model="search" wire:bounce="updatedSearch" placeholder="Search by employee file No"
             class="px-4 w-1/2 py-2 my-4 text rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
     </div>
 
     <table class="w-full border-collapse border border-slate-400 text-center border-spacing-2 table-auto ">

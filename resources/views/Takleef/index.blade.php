@@ -21,6 +21,7 @@
 
                     <livewire:search-employees />
 
+
                     {{-- <table
                         class="w-full border-collapse border border-slate-400 text-center border-spacing-2 table-fixed">
                         <thead>
