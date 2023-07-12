@@ -15,9 +15,13 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('takleef.index')" :active="request()->routeIs('takleef.index')">
-                        {{ __('Takleef') }}
+                    <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.index')">
+                        {{ __('Employees | الموظفين') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('takleef.index')" :active="request()->routeIs('takleef.index')">
+                        {{ __('Takleef | التكاليف') }}
+                    </x-nav-link>
+
                 </div>
             </div>
 

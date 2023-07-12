@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('takleefs', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('employee_id')->unsigned();
-            $table->string('date');
+            $table->date('date');
             $table->string('employee_in')->nullable();
             $table->string('employee_out')->nullable();
             $table->bigInteger('user_id')->unsigned();

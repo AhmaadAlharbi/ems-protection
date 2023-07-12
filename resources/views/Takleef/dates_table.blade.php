@@ -15,7 +15,7 @@
                                         class="border border-gray-300 rounded-md p-2 my-2 w-full"
                                         value="{{$employee_info->name}}">
                                     <label class="block">الرقم المدني</label>
-                                    <input name="civilId" type="text" value=" {{$employee_info->civilid}}"
+                                    <input name="civilId" type="text" value=" {{$employee_info->civilId}}"
                                         class="border border-gray-300 rounded-md p-2 my-2 w-full">
                                     <label class="block">رقم الملف</label>
                                     <input name="fileNo" type="text"

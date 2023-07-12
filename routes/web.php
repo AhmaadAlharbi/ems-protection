@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TakleefController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::resource('takleef', TakleefController::class);
 Route::get('/takleef/show/{id}/{month}', [TakleefController::class, 'show'])->name('takleef.show');
 Route::post('/takleef/search/{month}', [TakleefController::class, 'search'])->name('takleef.search');
 Route::get('/edit-takleef/{id}/{month}', [TakleefController::class, 'edit'])->name('edit-takleef');
+Route::resource('employees', EmployeeController::class);
 
 
 

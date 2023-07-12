@@ -17,7 +17,6 @@ class TakleefController extends Controller
     }
     public function index()
     {
-
         return view('Takleef.index');
     }
     public function takleefList($number)
@@ -81,16 +80,16 @@ class TakleefController extends Controller
 
     public function search(Request $request, $month)
     {
-        // $data = $request->validate(
-        //     [
-        //         'fileNo' => 'required',
-
-        //     ],
-        //     [
-
-        //         'fileNo' => 'يرجى ادخال رقم الملف الخاص بالموظف'
-        //     ]
-        // );
+        $data = $request->validate(
+            [
+                'fileNo' => 'required_without:civilid',
+                'civilid' => 'required_without:fileNo'
+            ],
+            [
+                'fileNo.required_without' => 'يرجى ادخال رقم الملف الخاص بالموظف',
+                'civilid.required_without' => 'يرجى ادخال رقم الهوية المدنية الخاص بالموظف'
+            ]
+        );
         $fileNo = $request->fileNo;
         $civilId = $request->civilid;
         $employee_info =  Employee::where('fileNo', $fileNo)->orWhere('civilid', $civilId)->first();

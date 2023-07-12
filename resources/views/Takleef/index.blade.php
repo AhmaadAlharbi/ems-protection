@@ -19,7 +19,6 @@
 
                     </div>
 
-                    <livewire:search-employees />
 
 
                     {{-- <table
