@@ -45,7 +45,10 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        //
+        if (!$employee) {
+            abort(404);
+        }
+        return view('employees.show', compact('employee'));
     }
 
     /**
@@ -53,7 +56,18 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        //
+        if (!$employee) {
+            abort(404);
+        }
+        // Update the employee attributes with the new values from the request
+        $employee->name = $request->input('name');
+        $employee->civilId = $request->input('civilId');
+        $employee->fileNo = $request->input('fileNo');
+        $employee->shift_group = $request->input('shiftGroup');
+        // Save the updated employee record
+        $employee->save();
+        session()->flash('success', 'Employee updated successfully.');
+        return back();
     }
 
     /**

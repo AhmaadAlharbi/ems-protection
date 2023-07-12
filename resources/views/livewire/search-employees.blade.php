@@ -36,7 +36,8 @@
                 <td class="border border-slate-300 py-3">{{ $employee->civilId }}</td>
                 <td class="border border-slate-300 py-3">{{ $employee->fileNo }}</td>
                 <td class="border border-slate-300 py-3">
-                    <a href="#" class="inline-block px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                    <a href="{{route('employees.edit',$employee->id)}}"
+                        class="inline-block px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
                         <i class="fas fa-edit mr-2"></i>Edit
                     </a>
                     <button wire:click="confirmDelete('{{ $employee->id }}')"
