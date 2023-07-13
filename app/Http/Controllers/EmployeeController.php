@@ -19,9 +19,10 @@ class EmployeeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
+        return view('employees.create');
     }
 
     /**
@@ -29,7 +30,16 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $employee = new Employee();
+        $employee->name = $request->name;
+        $employee->civilId = $request->civilId;
+        $employee->fileNo = $request->fileNo;
+        $employee->shift_group = $request->shiftGroup;
+
+        $employee->save();
+        session()->flash('success', 'Employee saved successfully.');
+
+        return redirect()->route('employees.index');
     }
 
     /**
