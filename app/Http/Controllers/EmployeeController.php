@@ -30,6 +30,13 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'civilId' => 'required|unique:employees',
+            'fileNo' => 'required|unique:employees',
+            'shiftGroup' => 'nullable',
+        ]);
+
         $employee = new Employee();
         $employee->name = $request->name;
         $employee->civilId = $request->civilId;

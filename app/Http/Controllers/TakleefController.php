@@ -7,6 +7,7 @@ use App\Models\Takleef;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class TakleefController extends Controller
 {
@@ -124,28 +125,35 @@ class TakleefController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'civilId' => 'required',
-            'fileNo' => 'required'
-        ], [
-            'name.required' => 'يرجى ادخال اسم الموظف',
-            'civilId.required' => 'يرجى ادخال الرقم المدني للموظف',
-            'fileNo.required' => 'يرجى ادخال رقم الملف للموظف'
-        ]);
-
+        //check if there is changes in employee data
+        $employee_id = $request->input('employee_id');
         $name = $request->input('name');
         $civilId = $request->input('civilId');
         $fileNo = $request->input('fileNo');
         $shift_group = $request->input('shift_group');
-        $employee_info = Employee::where('fileNo', $fileNo)->first();
-        if ($shift_group === '') {
-            $employee_info->shift_group = null;
-        } else {
-            $employee_info->shift_group = $shift_group;
-        }
-        $employee_info->save();
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required',
+        //     'civilId' => 'required|unique:employees,civilId,' . $employee_id,
+        //     'fileNo' => 'required|unique:employees,fileNo,' . $employee_id,
+        //     'shift_group' => 'nullable',
+        // ]);
 
+        // if ($validator->fails()) {
+        //     return redirect()->back()
+        //         ->withErrors($validator)
+        //         ->withInput();
+        // }
+        $employee_info = Employee::where('id', $employee_id)->first();
+        if ($employee_info) {
+            $employee_info->fill([
+                'name' => $name,
+                'civilId' => $civilId,
+                'fileNo' => $fileNo,
+                'shift_group' => $shift_group,
+            ]);
+
+            $employee_info->save();
+        }
         $currentMonth = $request->month;
         $daysInMonth = Carbon::createFromDate($this->currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in current momth
         for ($i = 1; $i <= $daysInMonth; $i++) {
@@ -156,40 +164,16 @@ class TakleefController extends Controller
         foreach ($dates as $date) {
             $attendance[$date] = Takleef::where('employee_id', $employee_info->id)->whereDate('date', $date)->first();
         }
-        //check if there is update on employee data
-        $updatedData = [];
-        if ($employee_info->name !== $name) {
-            $updatedData['name'] = $name;
-        }
-        if ($employee_info->civilId !== $civilId) {
-            $updatedData['civilId'] = $civilId;
-        }
-        if ($employee_info->fileNo !== $fileNo) {
-            $updatedData['fileNo'] = $fileNo;
-        }
-        if ($employee_info->shift !== $shift_group) {
-
-            $updatedData['shift_group'] = $shift_group;
-        }
-        if (!empty($updatedData)) {
-            $employee_info->update($updatedData);
-        }
         //retrive dates of employee takleef and comare it with the input
-        $takleef_db = Takleef::where('employee_id', $employee_info->id)->get();
+        $takleef_db = Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $request->month)->get();
         $employee_in = $request->input('employee_in');
         $employee_out = $request->input('employee_out');
-        if (empty($employee_in) && empty($employee_out)) {
-            Takleef::where('employee_id', $employee_info->id)->update(['employee_in' => null, 'employee_out' => null]);
-            Takleef::where('employee_id', $employee_info->id)->whereNull('employee_in')->whereNull('employee_out')->delete();
-        }
-
         // check if employee_in array is not empty
         if (!empty($employee_in) || !empty($employee_out)) {
             $employee_in = $employee_in ?: array();
             $employee_out = $employee_out ?: array();
             $dates = array_merge($employee_in, $employee_out);
             Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $request->month)->update(['employee_in' => null, 'employee_out' => null]);
-
             foreach ($dates as $date) {
                 $attend = Takleef::where('employee_id', $employee_info->id)->where('date', $date)->first();
                 if (!$attend) {
@@ -210,6 +194,11 @@ class TakleefController extends Controller
                 }
             }
         }
+        //delete when both of employee in and out are null
+        Takleef::where('employee_id', $employee_info->id)
+            ->whereNull('employee_in')
+            ->whereNull('employee_out')
+            ->delete();
         return redirect('/takleef/show' . '/' . $employee_info->id . '/' . $request->month)->withInput()->with('success', 'تم التعديل بنجاح')->with(compact('dates', 'employee_info', 'attendance'));
     }
 

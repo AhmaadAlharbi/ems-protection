@@ -12,10 +12,20 @@
                 Swal.fire('Success', '{{ session('success') }}', 'success');
             </script>
             @endif
+            @if ($errors->any())
+
+            <div class="p-4 text-white bg-red-500">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li class="my-1">{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
-                    <form action="{{route('employees.store')}}" method="POST">
+                    <form action="{{ route('employees.store') }}" method="POST">
                         @method('POST')
                         @csrf
                         <div class="mb-4">
