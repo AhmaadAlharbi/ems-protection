@@ -131,18 +131,6 @@ class TakleefController extends Controller
         $civilId = $request->input('civilId');
         $fileNo = $request->input('fileNo');
         $shift_group = $request->input('shift_group');
-        // $validator = Validator::make($request->all(), [
-        //     'name' => 'required',
-        //     'civilId' => 'required|unique:employees,civilId,' . $employee_id,
-        //     'fileNo' => 'required|unique:employees,fileNo,' . $employee_id,
-        //     'shift_group' => 'nullable',
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return redirect()->back()
-        //         ->withErrors($validator)
-        //         ->withInput();
-        // }
         $employee_info = Employee::where('id', $employee_id)->first();
         if ($employee_info) {
             $employee_info->fill([
@@ -168,12 +156,20 @@ class TakleefController extends Controller
         $takleef_db = Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $request->month)->get();
         $employee_in = $request->input('employee_in');
         $employee_out = $request->input('employee_out');
+        if (empty($employee_in) && empty($employee_out)) {
+            Takleef::where('employee_id', $employee_info->id)->update(['employee_in' => null, 'employee_out' => null]);
+            Takleef::where('employee_id', $employee_info->id)->whereNull('employee_in')->whereNull('employee_out')->delete();
+            session()->flash('success', 'No data to show | لا يوجد بيانات لعرضها ');
+            return redirect()->route('takleef.index');
+        }
         // check if employee_in array is not empty
         if (!empty($employee_in) || !empty($employee_out)) {
             $employee_in = $employee_in ?: array();
             $employee_out = $employee_out ?: array();
             $dates = array_merge($employee_in, $employee_out);
-            Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $request->month)->update(['employee_in' => null, 'employee_out' => null]);
+            Takleef::where('employee_id', $employee_info->id)
+                ->whereMonth('date', $request->month)
+                ->update(['employee_in' => null, 'employee_out' => null]);
             foreach ($dates as $date) {
                 $attend = Takleef::where('employee_id', $employee_info->id)->where('date', $date)->first();
                 if (!$attend) {
@@ -186,6 +182,8 @@ class TakleefController extends Controller
                     ]);
                 } else {
                     $attend->update([
+                        'employee_id' => $employee_info->id,
+                        'date' => $date,
                         'employee_in' => in_array($date, $employee_in) ? 'بداية الدوام' : null,
                         'employee_out' => in_array($date, $employee_out) ? 'نهاية الدوام' : null,
                         'user_id' => Auth::user()->id
@@ -193,12 +191,13 @@ class TakleefController extends Controller
                     ]);
                 }
             }
+            //delete when both of employee in and out are null
+            Takleef::where('employee_id', $employee_info->id)
+                ->whereNull('employee_in')
+                ->whereNull('employee_out')
+                ->delete();
         }
-        //delete when both of employee in and out are null
-        Takleef::where('employee_id', $employee_info->id)
-            ->whereNull('employee_in')
-            ->whereNull('employee_out')
-            ->delete();
+
         return redirect('/takleef/show' . '/' . $employee_info->id . '/' . $request->month)->withInput()->with('success', 'تم التعديل بنجاح')->with(compact('dates', 'employee_info', 'attendance'));
     }
 
