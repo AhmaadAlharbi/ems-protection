@@ -268,13 +268,17 @@ class TakleefController extends Controller
 
         $fileName = 'table_data.xlsx';
 
-        $exportedRecords = $export->query()->get();
+        $exportedRecords = Takleef::whereNotNull('exported_at')->pluck('id')->toArray();
 
-        // Update the exported_at column for the exported records
-        foreach ($exportedRecords as $record) {
+        $newRecords = Takleef::whereNotIn('id', $exportedRecords)->get();
+
+        // Update the exported_at column for the new records
+        foreach ($newRecords as $record) {
             $record->exported_at = now();
             $record->save();
         }
+
+        $export->setRecords($newRecords);
 
         return Excel::download($export, $fileName);
     }
