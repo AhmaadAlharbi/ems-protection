@@ -11,7 +11,7 @@
                                 <div>
                                     <label class="block">الاسم</label>
                                     <input type="hidden" name="month" value="{{$month}}">
-                                    <input type="hidden" name="employee_id" value="{{$employee_info->id}}">
+                                    <input type="text" name="employee_id" value="{{$employee_info->id}}">
                                     <input name="name" type="text"
                                         class="border border-gray-300 bg-gray-300 cursor-not-allowed rounded-md p-2 my-2 w-full"
                                         value="{{$employee_info->name}}" readonly>

@@ -30,7 +30,7 @@ Route::get('/takleef/show/{id}/{month}', [TakleefController::class, 'show'])->na
 Route::post('/takleef/search/{month}', [TakleefController::class, 'search'])->name('takleef.search');
 Route::get('/edit-takleef/{id}/{month}', [TakleefController::class, 'edit'])->name('edit-takleef');
 Route::resource('employees', EmployeeController::class);
-
+Route::get('/export', [TakleefController::class, 'exportToExcel'])->name('export');
 
 
 Route::middleware('auth')->group(function () {

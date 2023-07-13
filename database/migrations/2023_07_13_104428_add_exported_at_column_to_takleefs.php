@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
-            $table->id();
-            $table->String('name');
-            $table->String('civilId');
-            $table->String('fileNo');
-            $table->String('shift_group')->nullable();
-            $table->timestamps();
+        Schema::table('takleefs', function (Blueprint $table) {
+            $table->timestamp('exported_at')->nullable();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::table('takleefs', function (Blueprint $table) {
+            //
+        });
     }
 };

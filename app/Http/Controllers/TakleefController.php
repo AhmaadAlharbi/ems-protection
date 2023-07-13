@@ -8,6 +8,8 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\TakleefTable;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TakleefController extends Controller
 {
@@ -157,8 +159,8 @@ class TakleefController extends Controller
         $employee_in = $request->input('employee_in');
         $employee_out = $request->input('employee_out');
         if (empty($employee_in) && empty($employee_out)) {
-            Takleef::where('employee_id', $employee_info->id)->update(['employee_in' => null, 'employee_out' => null]);
-            Takleef::where('employee_id', $employee_info->id)->whereNull('employee_in')->whereNull('employee_out')->delete();
+            Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $currentMonth)->update(['employee_in' => null, 'employee_out' => null]);
+            Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $currentMonth)->whereNull('employee_in')->whereNull('employee_out')->delete();
             session()->flash('success', 'No data to show | لا يوجد بيانات لعرضها ');
             return redirect()->route('takleef.index');
         }
@@ -259,5 +261,21 @@ class TakleefController extends Controller
     public function destroy(Takleef $takleef)
     {
         //
+    }
+    public function exportToExcel()
+    {
+        $export = new TakleefTable;
+
+        $fileName = 'table_data.xlsx';
+
+        $exportedRecords = $export->query()->get();
+
+        // Update the exported_at column for the exported records
+        foreach ($exportedRecords as $record) {
+            $record->exported_at = now();
+            $record->save();
+        }
+
+        return Excel::download($export, $fileName);
     }
 }
