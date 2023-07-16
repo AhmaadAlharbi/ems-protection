@@ -60,6 +60,7 @@
         @media print {
 
 
+
             button,
             .edit-btn {
                 display: none;
@@ -140,19 +141,88 @@
 
 
         }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button,
+        .button-group a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-pdf {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .button-home {
+            background-color: #2196f3;
+            color: #fff;
+        }
+
+        .button-edit {
+            background-color: #ff9800;
+            color: #fff;
+        }
+
+        .button-group button:hover,
+        .button-group a:hover {
+            background-color: #ddd;
+        }
+
+        @media print {
+            .button-group {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
 
 
-    {{-- <button class="btn btn-danger" onclick="generatePDF()">Generate PDF</button> --}}
-    <button onclick="window.print()">حفظ PDF</button>
+    <div class="button-group">
+        <button onclick="window.print()" class="button-pdf">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16"
+                height="16">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                </path>
+            </svg>
+            حفظ PDF
+        </button>
+        <a href="{{ route('takleef.index') }}" class="button-home">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16"
+                height="16">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+            الرئيسية
+        </a>
+        <a href="{{ route('edit-takleef', ['id' => $employee_info->employee->id, 'month' => $month]) }}"
+            class="button-edit">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16"
+                height="16">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v-2"></path>
+            </svg>
+            تعديل
+        </a>
+    </div>
 
 
-    <a href="{{route('takleef.index')}}" class="btn edit-btn btn-outline-success">الرئيسية</a>
-    <a href="{{route('edit-takleef',['id'=>$employee_info->employee->id,'month'=>$month])}}"
-        class="btn edit-btn btn-primary">تعديل</a>
     <div class="row container border-dark text-center mx-auto d-block">
         <div id="print" class="row page ">
             <img class="header-img" src="{{ asset('images/header.png') }}" alt="Image">

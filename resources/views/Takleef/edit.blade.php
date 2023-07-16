@@ -11,27 +11,44 @@
                                 <div>
                                     <label class="block">الاسم</label>
                                     <input type="hidden" name="month" value="{{$month}}">
+                                    <input type="hidden" name="employee_id" value="{{$employee_info->id}}">
                                     <input name="name" type="text"
-                                        class="border border-gray-300 rounded-md p-2 my-2 w-full"
-                                        value="{{$employee_info->name}}">
+                                        class="border border-gray-300 bg-gray-300 cursor-not-allowed rounded-md p-2 my-2 w-full"
+                                        value="{{$employee_info->name}}" readonly>
                                     <label class="block">الرقم المدني</label>
-                                    <input name="civilId" type="text" value=" {{$employee_info->civilid}}"
-                                        class="border border-gray-300 rounded-md p-2 my-2 w-full">
+                                    <input name="civilId" type="text" value=" {{$employee_info->civilId}}"
+                                        class="border border-gray-300 rounded-md p-2 my-2 w-full bg-gray-300 cursor-not-allowed"
+                                        readonly>
                                     <label class="block">رقم الملف</label>
                                     <input name="fileNo" type="text"
-                                        class="border border-gray-300 rounded-md p-2 my-2 w-full"
-                                        value="{{$employee_info->fileNo}}">
+                                        class="border border-gray-300 rounded-md p-2 my-2 w-full bg-gray-300 cursor-not-allowed"
+                                        value="{{$employee_info->fileNo}}" readonly>
                                     <label class="block">Shift</label>
                                     <input name="shift_group" type="text"
                                         class="border border-gray-300 rounded-md p-2 my-2 w-full"
                                         value="{{$employee_info->shift_group}}">
-                                    <button type="submit"
-                                        class="bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-4 rounded-lg mt-2"
-                                        data-toggle="modal" data-target="#exampleModal">
-                                        تعديل
-                                    </button>
-                                    <a href="/takleef/show/{{$employee_info->id}}/{{$month}}"
-                                        class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg mt-2">PDF</a>
+
+
+                                    <div class="flex flex-col justify-evenly space-y-4 text-center">
+                                        <a href="{{route('employees.edit', $employee_info->id)}}"
+                                            class="block px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                                            <i class="fas fa-edit mr-2"></i>
+                                            Edit Employee
+                                        </a>
+                                        <button type="submit"
+                                            class="bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-4 rounded-lg mt-2">
+                                            <i class="fas fa-save mr-2"></i>
+                                            Save Dates
+                                        </button>
+
+                                        <a href="/takleef/show/{{$employee_info->id}}/{{$month}}"
+                                            class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg mt-2">
+                                            <i class="fas fa-file-pdf mr-2"></i>
+                                            PDF
+                                        </a>
+
+
+                                    </div>
 
                                 </div>
                                 <div class="overflow-x-auto col-span-2  " dir="rtl">
@@ -96,7 +113,7 @@
                                                                 </td>
                                                                 <td class="py-2 border-b border-gray-300">
                                                                     @if(is_array($attendance) && array_key_exists($date,
-                                                                    $attendance) && $attendance[$date] &&
+                                                                    $attendance) && $attendance[$date] !== null &&
                                                                     $attendance[$date]->employee_in === 'بداية الدوام')
                                                                     <input type="checkbox" name="employee_in[]"
                                                                         value="{{ $date }}" checked
@@ -107,6 +124,7 @@
                                                                         class="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
                                                                     @endif
                                                                 </td>
+
 
                                                                 <td class="py-2 border-b border-gray-300">
                                                                     @if(is_array($attendance) && in_array($date,

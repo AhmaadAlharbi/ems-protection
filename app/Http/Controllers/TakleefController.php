@@ -241,9 +241,11 @@ class TakleefController extends Controller
             $dates[] = $date->format('Y-m-d');
         }
         $attendance = array();
+
         foreach ($dates as $date) {
             $attendance[$date] = Takleef::where('employee_id', $employee_info->id)->whereDate('date', $date)->first();
         }
+        // dd($attendance);
         return view('Takleef.edit', compact('dates', 'employee_info', 'attendance', 'month'));
     }
 
