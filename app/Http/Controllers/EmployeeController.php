@@ -13,7 +13,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::orderBy('fileNo')->paginate(15);
-        return view('Employees.index', compact('employees'));
+        return view('employees.index', compact('employees'));
     }
 
     /**
