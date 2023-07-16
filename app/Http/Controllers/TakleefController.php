@@ -265,8 +265,8 @@ class TakleefController extends Controller
     public function exportToExcel($month)
     {
         // Get the start and end date of the month
-        $startDate = date('Y-m-01', strtotime($month));
-        $endDate = date('Y-m-t', strtotime($month));
+        // $startDate = date('Y-m-01', strtotime($month));
+        // $endDate = date('Y-m-t', strtotime($month));
 
         // Get the records within the specified month
         $currentYear = date('Y');

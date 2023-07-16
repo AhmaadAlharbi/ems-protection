@@ -16,6 +16,10 @@
                     @endif
 
                     <h1 class="text-3xl text-center my-6">تكاليف عمل قسم الوقاية</h1>
+                    <div class="my-5 flex justify-center items-center">
+                        <img src="{{asset('images/undraw_date_picker_re_r0p8.svg')}}" alt="takleef hero svg" class=" ">
+
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         @for ($i = 1; $i <= 12; $i++) <a href="/search/{{$i}}"
                             class="text-white bg-cyan-600 hover:bg-cyan-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
