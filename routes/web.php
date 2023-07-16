@@ -26,11 +26,11 @@ Route::get('/dashboard', function () {
 // Route::get('/takleef', [TakleefController::class, 'index'])->name('Takleef.index');
 Route::get('/search/{month}', [TakleefController::class, 'takleefList']);
 Route::resource('takleef', TakleefController::class);
-Route::get('/takleef/show/{id}/{month}', [TakleefController::class, 'show'])->name('takleef.show');
+Route::get('/takleef/show/{id}/{month}', [TakleefController::class, 'show'])->name('takleeef.show');
 Route::post('/takleef/search/{month}', [TakleefController::class, 'search'])->name('takleef.search');
 Route::get('/edit-takleef/{id}/{month}', [TakleefController::class, 'edit'])->name('edit-takleef');
 Route::resource('employees', EmployeeController::class);
-Route::get('/export', [TakleefController::class, 'exportToExcel'])->name('export');
+Route::get('/export/{month}', [TakleefController::class, 'exportToExcel'])->name('export');
 
 
 Route::middleware('auth')->group(function () {

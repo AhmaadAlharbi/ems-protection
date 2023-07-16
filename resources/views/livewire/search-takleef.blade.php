@@ -5,7 +5,11 @@
             class="px-4 w-1/2 py-2 my-4 text rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 
     </div>
-
+    <a href="{{ route('export', ['month' => $month]) }}"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-5 px-4 rounded flex items-center justify-center text-xl">
+        <i class="fas fa-file-excel mr-2"></i>
+        Export to Excel
+    </a>
     <table class="w-full border-collapse border border-slate-400 text-center border-spacing-2 table-auto ">
         <thead>
             <tr>

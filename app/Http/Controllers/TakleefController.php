@@ -262,23 +262,22 @@ class TakleefController extends Controller
     {
         //
     }
-    public function exportToExcel()
+    public function exportToExcel($month)
     {
-        $export = new TakleefTable;
+        // Get the start and end date of the month
+        $startDate = date('Y-m-01', strtotime($month));
+        $endDate = date('Y-m-t', strtotime($month));
 
+        // Get the records within the specified month
+        $currentYear = date('Y');
+
+        $records = Takleef::whereMonth('date', $month)
+            ->whereYear('date', $currentYear)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $export = new TakleefTable($records);
         $fileName = 'table_data.xlsx';
-
-        $exportedRecords = Takleef::whereNotNull('exported_at')->pluck('id')->toArray();
-
-        $newRecords = Takleef::whereNotIn('id', $exportedRecords)->get();
-
-        // Update the exported_at column for the new records
-        foreach ($newRecords as $record) {
-            $record->exported_at = now();
-            $record->save();
-        }
-
-        $export->setRecords($newRecords);
 
         return Excel::download($export, $fileName);
     }

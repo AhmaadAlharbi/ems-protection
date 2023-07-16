@@ -21,6 +21,7 @@
 
                     <h1 class="text-center mt-4">{{$title}}</h1>
 
+
                     <form action="{{ route('takleef.search', $month) }}" method="POST" class="w-full">
 
                         @csrf
@@ -38,6 +39,7 @@
                             </button>
                         </div>
                     </form>
+
                     <livewire:search-takleef :month="$month" />
 
                 </div>

@@ -14,7 +14,6 @@
                         Swal.fire('success', '{{ session('success') }}', 'success');
                     </script>
                     @endif
-                    <a href="{{ route('export') }}">Export to Excel</a>
 
                     <h1 class="text-3xl text-center my-6">تكاليف عمل قسم الوقاية</h1>
                     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">

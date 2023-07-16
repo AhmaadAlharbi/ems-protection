@@ -2,21 +2,23 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Takleef;
 
-class TakleefTable implements FromQuery, WithMapping, WithHeadings
+class TakleefTable implements FromCollection, WithMapping, WithHeadings
 {
-    use Exportable;
-
     protected $records;
 
-    public function query()
+    public function __construct($records)
     {
-        return Takleef::query()->whereIn('id', $this->records->pluck('id')->toArray())->with('employee:id,fileNo');
+        $this->records = $records;
+    }
+
+    public function collection()
+    {
+        return $this->records;
     }
 
     public function map($tableData): array
@@ -25,14 +27,9 @@ class TakleefTable implements FromQuery, WithMapping, WithHeadings
             $tableData->id,
             $tableData->employee->fileNo,
             $tableData->date,
+            $tableData->created_at,
             // Include other columns as needed
         ];
-    }
-
-    public function setRecords($records)
-    {
-        $this->records = $records;
-        return $this;
     }
 
     public function headings(): array
