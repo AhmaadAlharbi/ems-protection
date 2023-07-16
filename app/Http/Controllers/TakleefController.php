@@ -108,7 +108,16 @@ class TakleefController extends Controller
             foreach ($dates as $date) {
                 $attendance[$date] = Takleef::where('employee_id', $employee_info->id)->whereDate('date', $date)->first();
             }
-            return view('Takleef.dates_table', compact('dates', 'employee_info', 'attendance', 'fileNo', 'month'));
+            $employee_takleef = Takleef::where('employee_id', $employee_info->id)
+                ->where(function ($query) {
+                    $query->whereNotNull('employee_in')
+                        ->orWhereNotNull('employee_out');
+                })
+                ->whereMonth('date', $month)
+                ->orderBy('date')
+                ->get();
+
+            return view('Takleef.dates_table', compact('dates', 'employee_info', 'attendance', 'fileNo', 'month', 'employee_takleef'));
         } else {
             session()->flash('error', '   رقم الملف غير موجود ');
             return redirect()->back();
@@ -217,6 +226,9 @@ class TakleefController extends Controller
             ->whereMonth('date', $month)
             ->orderBy('date')
             ->get();
+        if ($employee_takleef->isEmpty()) {
+            abort(404, 'Employee takleef not found');
+        }
         $currentMonth = $month; //September
         $daysInMonth = Carbon::createFromDate($this->currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in September
         for ($i = 1; $i <= $daysInMonth; $i++) {
