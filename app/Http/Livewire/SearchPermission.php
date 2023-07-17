@@ -2,12 +2,38 @@
 
 namespace App\Http\Livewire;
 
+use Carbon\Carbon;
 use Livewire\Component;
+use App\Models\Permission;
+use Livewire\WithPagination;
 
 class SearchPermission extends Component
 {
+    use WithPagination;
+    public $search;
+    protected $listeners = ['updatedSearch', 'deletePermission'];
     public function render()
     {
-        return view('livewire.search-permission');
+        $currentYear = Carbon::now()->year;
+        $permissions = Permission::whereYear('date', $currentYear)
+            ->whereHas('employee', function ($query) {
+                $query->where('fileNo', 'like',  $this->search . '%');
+            })
+            ->orderByDesc('created_at')
+            ->orderBy('date')
+            ->paginate(10);
+        return view('livewire.search-permission', compact('permissions'));
+    }
+    public function confirmDelete($permission_id)
+    {
+        // dd($permission_id);
+        $this->dispatchBrowserEvent('showDeleteConfirmation', ['permission_id' => $permission_id]);
+    }
+
+    public function deletePermission($permission_id)
+    {
+        $perm = Permission::findOrFail($permission_id);
+        $perm->delete();
+        session()->flash('success', 'Employee deleted successfully.');
     }
 }

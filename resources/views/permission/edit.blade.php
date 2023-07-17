@@ -9,18 +9,19 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form action="{{route('permission.store')}}" method="POST">
+                    <form action="{{route('permission.update',$permission->id)}}" method="POST">
+                        @method('PUT')
                         @csrf
                         <div class="flex flex-col gap-4">
                             <label for="fileNo" class="text-sm font-medium">File No | رقم الملف</label>
-                            <input type="text" name="fileNo" id="fileNo" value="{{ old('fileNo') }}"
+                            <input type="text" name="fileNo" id="fileNo" value="{{ $permission->employee->fileNo }}"
                                 class="w-full bg-gray-50 border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500">
                             @if ($errors->has('fileNo'))
                             <span class="text-red-500 text-sm">{{ $errors->first('fileNo') }}</span>
                             @endif
                             <label for="date" class="text-sm font-medium">Date | التاريخ</label>
                             <input name="date" type="date" min="{{ date('Y-m-01') }}" max="{{ date('Y-m-t') }}"
-                                value="{{ old('date') }}"
+                                value="{{ $permission->date }}"
                                 class="w-full bg-gray-50 border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500">
 
 
@@ -31,14 +32,14 @@
 
                             <input type="time" name="time"
                                 class="w-full bg-gray-50 border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500"
-                                value="{{ old('time') }}">
+                                value="{{ $permission->time }}">
 
                             @if ($errors->has('time'))
                             <span class="text-red-500 text-sm">{{ $errors->first('time') }}</span>
                             @endif
                             <div>
                                 <label for="reason">reason | السبب</label>
-                                <input type="text" name="reason" value="{{ old('reason') }}"
+                                <input type="text" name="reason" value="{{ $permission->reason }}"
                                     class="w-full bg-gray-50 border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500">
 
                                 @if ($errors->has('reason'))
@@ -48,12 +49,12 @@
                             <div class="flex items-center gap-2">
                                 <label class="mr-2">
                                     <input type="radio" name="status" value="in" class="rounded-md text-gray-600" {{
-                                        old('status')=='in' ? 'checked' : '' }}>
+                                        $permission->status === 'in' ? 'checked' : '' }}>
                                     <span class="text-sm">In | دخول</span>
                                 </label>
                                 <label>
                                     <input type="radio" name="status" value="out" class="rounded-md text-gray-600" {{
-                                        old('status')=='out' ? 'checked' : '' }}>
+                                        $permission->status === 'out' ? 'checked' : '' }}>
                                     <span class="text-sm">Out | خروج</span>
                                 </label>
 
@@ -66,9 +67,6 @@
                                 class="w-full bg-cyan-500 text-white font-bold py-2 px-4 rounded-md">submit</button>
                         </div>
                     </form>
-
-
-
                 </div>
             </div>
         </div>

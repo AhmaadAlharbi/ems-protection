@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('date');
             $table->time('time');
             $table->string('status');
-            $table->String('reason');
+            $table->String('reason')->nullable();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->timestamps();
         });

@@ -30,6 +30,13 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'fileNo' => 'required',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'status' => 'required|in:in,out',
+        ]);
+
         $fileNo = $request->input('fileNo');
         $date = $request->input('date');
         $time = $request->input('time');
@@ -41,6 +48,9 @@ class PermissionController extends Controller
         $permission_count = Permission::where('employee_id', $employee->id)
             ->whereMonth('date', $currentMonth)
             ->count();
+        if ($permission_count === 0) {
+            $permission_count++;
+        }
         if ($employee) {
             $permission = new Permission();
             $permission->employee_id = $employee->id;
@@ -85,6 +95,7 @@ class PermissionController extends Controller
     }
 
 
+
     /**
      * Display the specified resource.
      */
@@ -98,16 +109,75 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        //
+        return view('permission.edit', compact('permission'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Permission $permission)
+    public function update(Request $request, $permissionId)
     {
-        //
+        $request->validate([
+            'fileNo' => 'required',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'status' => 'required|in:in,out',
+        ]);
+
+        $fileNo = $request->input('fileNo');
+        $date = $request->input('date');
+        $time = $request->input('time');
+        $status = $request->input('status');
+        $reason = $request->input('reason');
+        $employee = Employee::where('fileNo', $fileNo)->first();
+        $currentMonth = Carbon::now()->month;
+
+        $permission_count = Permission::where('employee_id', $employee->id)
+            ->whereMonth('date', $currentMonth)
+            ->count();
+        if ($permission_count === 0) {
+            $permission_count++;
+        }
+
+        $permission = Permission::findOrFail($permissionId);
+        $permission->employee_id = $employee->id;
+        $permission->date = $date;
+        $day = Carbon::parse($date)->format('l');
+        $dayInArabic = '';
+        switch ($day) {
+            case 'Sunday':
+                $dayInArabic = 'الأحد';
+                break;
+            case 'Monday':
+                $dayInArabic = 'الاثنين';
+                break;
+            case 'Tuesday':
+                $dayInArabic = 'الثلاثاء';
+                break;
+            case 'Wednesday':
+                $dayInArabic = 'الأربعاء';
+                break;
+            case 'Thursday':
+                $dayInArabic = 'الخميس';
+                break;
+            case 'Friday':
+                $dayInArabic = 'الجمعة';
+                break;
+            case 'Saturday':
+                $dayInArabic = 'السبت';
+                break;
+            default:
+                $dayInArabic = 'Invalid day';
+                break;
+        }
+        $permission->time = $time;
+        $permission->status = $status;
+        $permission->reason = $reason;
+        $permission->save();
+
+        return view('permission.show', compact('permission', 'dayInArabic', 'permission_count'));
     }
+
 
     /**
      * Remove the specified resource from storage.

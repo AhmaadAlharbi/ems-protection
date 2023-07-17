@@ -14,6 +14,7 @@
 
                     <a class=" bg-yellow-500 text-dark font-bold py-2 px-4 rounded-md"
                         href="{{route('permission.create')}}">check permission</a>
+                    <livewire:search-permission />
                 </div>
             </div>
         </div>
