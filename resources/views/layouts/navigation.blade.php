@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('takleef.index')" :active="request()->routeIs('takleef.index')">
                         {{ __('Takleef | التكاليف') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('permission.index')" :active="request()->routeIs('permission.index')">
+                        {{ __('Eseathan | الاستْذان') }}
+                    </x-nav-link>
 
                 </div>
             </div>

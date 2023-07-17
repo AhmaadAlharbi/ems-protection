@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TakleefController;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees', EmployeeController::class);
     Route::get('/export/{month}', [TakleefController::class, 'exportToExcel'])->name('export');
 });
-
+Route::resource('/permission', PermissionController::class);
 
 
 Route::middleware('auth')->group(function () {
