@@ -11,17 +11,24 @@ class SearchPermission extends Component
 {
     use WithPagination;
     public $search;
+    public $selectedMonth = null;
     protected $listeners = ['updatedSearch', 'deletePermission'];
     public function render()
     {
         $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+
         $permissions = Permission::whereYear('date', $currentYear)
+            ->when($this->selectedMonth, function ($query) {
+                return $query->whereMonth('date', $this->selectedMonth);
+            })
             ->whereHas('employee', function ($query) {
                 $query->where('fileNo', 'like',  $this->search . '%');
             })
             ->orderByDesc('created_at')
             ->orderBy('date')
             ->paginate(10);
+
         return view('livewire.search-permission', compact('permissions'));
     }
     public function confirmDelete($permission_id)

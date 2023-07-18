@@ -101,7 +101,11 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
-        //
+        $employee = Employee::findOrfail($permission->employee_id);
+        return $permissions = Permission::where('employee_id', $employee->id)
+            ->orderByDesc('created_at')
+            ->get();
+        return view('permission.show', compact('permissions'));
     }
 
     /**

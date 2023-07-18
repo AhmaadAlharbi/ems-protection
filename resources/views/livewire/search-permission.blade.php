@@ -11,6 +11,41 @@
         Swal.fire('Success', '{{ session('success') }}', 'success');
     </script>
     @endif
+    <div class="flex items-center space-x-5">
+
+
+        @php
+        $currentMonth = date('n'); // Get the current month (without leading zeros)
+        @endphp
+
+        <select wire:model="selectedMonth" name="month" id="month"
+            class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500 my-4">
+            <option value="{{ $currentMonth }}">Current Month : {{ $currentMonth == 7 ? 'July' : $currentMonth }}
+            </option>
+            @foreach (range(1, 12) as $monthNumber)
+            <option value="{{ $monthNumber }}" {{ $monthNumber==$currentMonth ? 'selected' : '' }}>
+                {{ $monthNumber == 7 ? 'July' : date('F', mktime(0, 0, 0, $monthNumber, 1)) }}
+            </option>
+            @endforeach
+        </select>
+
+
+
+
+        {{-- <select name="year" id="year"
+            class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-blue-500">
+            @php
+            $currentYear = date('Y');
+            $previousYear = $currentYear - 1;
+            @endphp
+
+            <option value="{{ $currentYear }}">{{ $currentYear }}</option>
+            <option value="{{ $previousYear }}">{{ $previousYear }}</option>
+        </select> --}}
+
+    </div>
+
+
     <table class="w-full border-collapse border border-slate-400 text-center border-spacing-2 table-auto ">
         <thead>
             <tr>
@@ -28,7 +63,8 @@
             @foreach($permissions as $permission)
             <tr>
                 <td class="border border-slate-300 py-3">{{$loop->iteration}}</td>
-                <td class="border border-slate-300 py-3">{{$permission->employee->name}}</td>
+                <td class="border border-slate-300 py-3"><a class="text-blue-400 text-sm font-bold"
+                        href="{{route('permission.show',$permission)}}">{{$permission->employee->name}}</a></td>
                 <td class="border border-slate-300 py-3">{{$permission->employee->fileNo}}</td>
                 <td class="border border-slate-300 py-3">{{$permission->date}}</td>
                 <td class="border border-slate-300 ...">{{$permission->time}}</td>
