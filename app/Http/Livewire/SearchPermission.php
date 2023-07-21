@@ -16,7 +16,9 @@ class SearchPermission extends Component
     public function render()
     {
         $currentYear = Carbon::now()->year;
-        $currentMonth = Carbon::now()->month;
+        if ($this->selectedMonth === null) {
+            $this->selectedMonth = Carbon::now()->month;
+        }
 
         $permissions = Permission::whereYear('date', $currentYear)
             ->when($this->selectedMonth, function ($query) {

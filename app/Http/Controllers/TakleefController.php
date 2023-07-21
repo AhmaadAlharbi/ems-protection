@@ -136,6 +136,10 @@ class TakleefController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'fileNo' => 'sometimes|required|exists:employees,fileNo',
+            'civilid' => 'sometimes|required|exists:employees,civilId',
+        ]);
         //check if there is changes in employee data
         $employee_id = $request->input('employee_id');
         $name = $request->input('name');

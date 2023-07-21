@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     // return view('welcome');
-    return view('auth.login');
+    return view('employees.index');
 });
 
 Route::get('/dashboard', function () {
@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/export/{month}', [TakleefController::class, 'exportToExcel'])->name('export');
 });
 Route::resource('/permission', PermissionController::class);
-
+Route::get('/permission/{permission_id}/showPdf', [PermissionController::class, 'showPermissionPdf'])->name('showPermissionPdf');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

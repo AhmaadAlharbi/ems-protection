@@ -29,6 +29,9 @@
                             <input
                                 class="appearance-none bg-transparent border-gray-700 w-full text-gray-700 mr-3 py-2 px-2 leading-tight focus:outline-none"
                                 type="text" name="fileNo" placeholder="Enter file no">
+                            @if ($errors->has('fileNo'))
+                            <span class="text-red-500 text-sm">{{ $errors->first('fileNo') }}</span>
+                            @endif
                             <input
                                 class="appearance-none   border-gray-400 w-full text-gray-700 mr-3 py-2 px-2 leading-tight focus:outline-none"
                                 type="text" name="civilid" placeholder="Enter civil id">

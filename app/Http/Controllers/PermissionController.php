@@ -31,7 +31,7 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'fileNo' => 'required',
+            'fileNo' => 'required|exists:employees,fileNo',
             'date' => 'required|date',
             'time' => 'required|date_format:H:i',
             'status' => 'required|in:in,out',
@@ -48,6 +48,7 @@ class PermissionController extends Controller
         $permission_count = Permission::where('employee_id', $employee->id)
             ->whereMonth('date', $currentMonth)
             ->count();
+
         if ($permission_count === 0) {
             $permission_count++;
         }
@@ -87,7 +88,9 @@ class PermissionController extends Controller
             $permission->status = $status;
             $permission->reason = $reason;
             $permission->save();
-            return view('permission.show', compact('permission', 'dayInArabic', 'permission_count'));
+            return view('permission.showPdf', compact('permission', 'dayInArabic', 'permission_count'));
+            // return redirect()->route('permission.showPdf', ['id' => $permission->id, 'permission_count' => $permission_count]);
+
             // return redirect()->route('permission.index')->with('success', 'Permission created successfully');
         } else {
             return redirect()->route('permission.index')->with('error', 'Employee not found');
@@ -101,11 +104,17 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
         $employee = Employee::findOrfail($permission->employee_id);
-        return $permissions = Permission::where('employee_id', $employee->id)
-            ->orderByDesc('created_at')
-            ->get();
-        return view('permission.show', compact('permissions'));
+        $permissionCount = Permission::where('employee_id', $employee->id)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->count();
+        $permissions = Permission::where('employee_id', $employee->id)
+            ->orderByDesc('date')
+            ->paginate(10);
+        return view('permission.show', compact('permissions', 'permissionCount'));
     }
 
     /**
@@ -189,5 +198,44 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         //
+    }
+    public function showPermissionPdf($id)
+    {
+        $permission = Permission::findOrFail($id);
+        $day = Carbon::parse($permission->date)->format('l');
+        $month = Carbon::parse($permission->date)->format('n');
+        // return  $permission_count = Permission::where('employee_id', $permission->employee_id)
+        //     ->whereMonth('date', $month)
+        //     ->get();
+        $permission_count = null;
+
+        $dayInArabic = '';
+        switch ($day) {
+            case 'Sunday':
+                $dayInArabic = 'الأحد';
+                break;
+            case 'Monday':
+                $dayInArabic = 'الاثنين';
+                break;
+            case 'Tuesday':
+                $dayInArabic = 'الثلاثاء';
+                break;
+            case 'Wednesday':
+                $dayInArabic = 'الأربعاء';
+                break;
+            case 'Thursday':
+                $dayInArabic = 'الخميس';
+                break;
+            case 'Friday':
+                $dayInArabic = 'الجمعة';
+                break;
+            case 'Saturday':
+                $dayInArabic = 'السبت';
+                break;
+            default:
+                $dayInArabic = 'Invalid day';
+                break;
+        }
+        return view('permission.showPdf', compact('permission', 'dayInArabic', 'permission_count'));
     }
 }

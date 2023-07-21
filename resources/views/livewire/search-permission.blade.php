@@ -70,14 +70,21 @@
                 <td class="border border-slate-300 ...">{{$permission->time}}</td>
                 <td class="border border-slate-300 py-3">{{$permission->status}}</td>
                 <td class="border border-slate-300 py-3">{{$permission->created_at->format('Y-m-d') }}</td>
-                <td class="border border-slate-300 py-3">
+                <td class="border border-slate-300 py-3 text-center">
+                    <a href="{{ route('showPermissionPdf', $permission->id) }}"
+                        class="inline-block px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
+                        <i class="fas fa-file-pdf text-white mr-2"></i>
+                    </a>
+
                     <a href="{{route('permission.edit',$permission->id)}}"
                         class="inline-block px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
-                        <i class="fas fa-edit mr-2"></i>Edit
+                        <i class="fas fa-edit mr-2"></i>
                     </a>
+
+
                     <button wire:click="confirmDelete('{{ $permission->id }}')"
                         class="inline-block px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600">
-                        <i class="fas fa-trash-alt mr-2"></i>Delete
+                        <i class="fas fa-trash-alt mr-2"></i>
                     </button>
 
                 </td>
