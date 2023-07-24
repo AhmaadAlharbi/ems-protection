@@ -11,7 +11,7 @@
             Add new Holidays to employee
         </a>
         <button wire:click="showEndToday"
-            class="bg-amber-500  cursor-pointer hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded">
+            class="flex max-w-sm items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
             Holidays Ending Today | العطل المنتهية اليوم
         </button>
     </div>
