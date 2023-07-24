@@ -14,7 +14,9 @@
         </thead>
         <tbody>
             @foreach($holidays as $holiday)
-            <tr class="{{ $holiday->ending_date  < now()->toDateString() ? 'bg-red-400 text-white' : '' }}">
+            {{-- <tr class="{{ $holiday->ending_date  < now()->toDateString() ? 'bg-red-400 text-white' : '' }}"> --}}
+            <tr class="holiday-row {{ $holiday->ending_date  < now()->toDateString() ? 'expired' : '' }}">
+
                 <td class="border border-slate-300 py-3">{{$loop->iteration}}</td>
                 <td class="border border-slate-300 py-3">{{$holiday->employee->name}}</td>
                 <td class="border border-slate-300 py-3">{{$holiday->employee->fileNo}}</td>

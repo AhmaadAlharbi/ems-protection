@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.holiday-row.expired {
+    background-color: #ef4444; /* Red background color */
+    color: #fff; /* White text color */
+  }
