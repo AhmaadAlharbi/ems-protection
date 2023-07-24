@@ -9,7 +9,7 @@
                 <th class="border border-slate-300 py-5">ending Date</th>
                 <th class="border border-slate-300 py-5">Days Count</th>
                 <th class="border border-slate-300 py-5">added by</th>
-                <th class="border border-slate-300 py-5">created at</th>
+                {{-- <th class="border border-slate-300 py-5">created at</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -22,7 +22,7 @@
                 <td class="border border-slate-300 py-3">{{$holiday->ending_date}}</td>
                 <td class="border border-slate-300 ...">{{$holiday->days_count}}</td>
                 <td class="border border-slate-300 py-3">{{$holiday->user->name}}</td>
-                <td class="border border-slate-300 py-3">{{$holiday->created_at->format('Y-m-d') }}</td>
+                {{-- <td class="border border-slate-300 py-3">{{$holiday->created_at->format('Y-m-d') }}</td> --}}
             </tr>
             @endforeach
         </tbody>
