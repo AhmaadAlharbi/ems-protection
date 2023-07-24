@@ -35,9 +35,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/edit-takleef/{month}/{id}', [TakleefController::class, 'edit'])->name('edit-takleef');
     Route::resource('employees', EmployeeController::class);
     Route::get('/export/{month}', [TakleefController::class, 'exportToExcel'])->name('export');
+    Route::resource('holidays', HolidayController::class);
 });
 Route::resource('/permission', PermissionController::class);
-Route::resource('holidays', HolidayController::class);
 Route::get('/permission/{permission_id}/showPdf', [PermissionController::class, 'showPermissionPdf'])->name('showPermissionPdf');
 
 Route::middleware('auth')->group(function () {

@@ -15,6 +15,7 @@ export default {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
         },
+        safelist: ["bg-red-400"],
     },
 
     plugins: [forms],
