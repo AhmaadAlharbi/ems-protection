@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TakleefController;
@@ -36,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/export/{month}', [TakleefController::class, 'exportToExcel'])->name('export');
 });
 Route::resource('/permission', PermissionController::class);
+Route::resource('holidays', HolidayController::class);
 Route::get('/permission/{permission_id}/showPdf', [PermissionController::class, 'showPermissionPdf'])->name('showPermissionPdf');
 
 Route::middleware('auth')->group(function () {

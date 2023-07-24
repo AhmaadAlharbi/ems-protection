@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('permission.index')" :active="request()->routeIs('permission.index')">
                         {{ __('Eseathan | الاستئذان') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
+                        {{ __('Holidays | الاجازات') }}
+                    </x-nav-link>
 
                 </div>
             </div>
@@ -107,7 +110,9 @@
                 <x-responsive-nav-link :href="route('permission.index')">
                     {{ __('Eseathan | الاستْذان') }}
                 </x-responsive-nav-link>
-
+                <x-responsive-nav-link :href="route('holidays.index')">
+                    {{ __('Holidays | الاجازات') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
