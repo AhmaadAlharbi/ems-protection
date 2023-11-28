@@ -13,11 +13,15 @@ class Employee extends Model
         'name',
         'civilId',
         'fileNo',
-        'shift_group'
+        'shift_group',
+        'department_id'
     ];
     public function takleefList()
     {
         return $this->hasMany(Takleef::class);
     }
-
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

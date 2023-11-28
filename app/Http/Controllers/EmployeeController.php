@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
@@ -62,10 +63,11 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
+        $departments = Department::all();
         if (!$employee) {
             abort(404);
         }
-        return view('employees.show', compact('employee'));
+        return view('employees.show', compact('employee', 'departments'));
     }
 
     /**
@@ -81,6 +83,7 @@ class EmployeeController extends Controller
         $employee->civilId = $request->input('civilId');
         $employee->fileNo = $request->input('fileNo');
         $employee->shift_group = $request->input('shiftGroup');
+        $employee->department_id = $request->input('department_id');
         // Save the updated employee record
         $employee->save();
         session()->flash('success', 'Employee updated successfully.');

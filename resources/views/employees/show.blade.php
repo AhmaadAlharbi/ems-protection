@@ -38,6 +38,34 @@
                                     id="fileNo" name="fileNo" type="text" value="{{$employee->fileNo}}">
                             </div>
                             <div class="mb-4">
+                                <label class="block text-gray-700 font-bold mb-2" for="shiftGroup">Department</label>
+                                <select class="w-full" name="department_id" id="department_id">
+
+                                    <!-- If the employee has a department, display it as the default option -->
+                                    @isset($employee->department_id)
+                                    <option value="{{ $employee->department_id }}">
+                                        {{ $employee->department->name }}
+                                        @if($employee->department->area)
+                                        ({{ $employee->department->area }})
+                                        @endif
+                                    </option>
+                                    @endisset
+
+                                    <!-- Iterate through all departments and exclude the one already selected for the employee -->
+                                    @foreach($departments as $department)
+                                    @if(!isset($employee->department_id) || $employee->department_id != $department->id)
+                                    <option value="{{ $department->id }}">
+                                        {{ $department->name }}
+                                        @if($department->area)
+                                        ({{ $department->area }})
+                                        @endif
+                                    </option>
+                                    @endif
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
                                 <label class="block text-gray-700 font-bold mb-2" for="shiftGroup">Shift Group:</label>
                                 <input
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
