@@ -16,7 +16,9 @@ class TakleefController extends Controller
     public $currentYear;
     public function __construct()
     {
-        $this->currentYear = Carbon::now()->year;
+        // $this->currentYear = Carbon::now()->year;
+        $this->currentYear = Carbon::createFromDate(2023, 1, 1)->year;
+
     }
     public function index()
     {
@@ -289,9 +291,10 @@ class TakleefController extends Controller
         // Get the records within the specified month
         $currentYear = date('Y');
 
-        $records = Takleef::whereMonth('date', $month)
-            ->whereYear('date', $currentYear)
-            ->orderByDesc('created_at')
+        $records = Takleef::whereYear('date', 2023)
+        ->orderByDesc('created_at')
+        ->orderByDesc('date')
+           
             ->get();
 
         $export = new TakleefTable($records);
