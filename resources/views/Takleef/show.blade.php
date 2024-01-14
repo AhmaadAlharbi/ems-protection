@@ -223,7 +223,7 @@
     </div>
 
 
-    <div class="row container border-dark text-center mx-auto d-block">
+    <div class="row  border-dark text-center mx-auto d-block">
         <div id="print" class="row page ">
             <img class="header-img" src="{{ asset('images/header.png') }}" alt="Image">
             <h5 style="margin-top:40px;" class=" font-weight-bold mb-3">قطاع شبكات النقل الكهربائية</h5>
