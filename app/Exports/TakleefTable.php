@@ -24,10 +24,13 @@ class TakleefTable implements FromCollection, WithMapping, WithHeadings
     public function map($tableData): array
     {
         return [
-            $tableData->id,
+            // $tableData->id,
             $tableData->employee->fileNo,
             $tableData->date,
-            $tableData->created_at,
+            $tableData->employee->name,
+            $tableData->employee_in,
+            $tableData->employee_out
+            // $tableData->created_at,
             // Include other columns as needed
         ];
     }
@@ -35,10 +38,12 @@ class TakleefTable implements FromCollection, WithMapping, WithHeadings
     public function headings(): array
     {
         return [
-            'ID',
+
             'File No',
             'Date',
-            // Include other column headings as needed
+            'name',
+            'in',
+            'out'
         ];
     }
 }
