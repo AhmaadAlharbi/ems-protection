@@ -18,7 +18,6 @@ class TakleefController extends Controller
     {
         // $this->currentYear = Carbon::now()->year;
         $this->currentYear = Carbon::createFromDate(2023, 1, 1)->year;
-
     }
     public function index()
     {
@@ -88,19 +87,23 @@ class TakleefController extends Controller
         $data = $request->validate(
             [
                 'fileNo' => 'required_without:civilid',
-                'civilid' => 'required_without:fileNo'
+                'civilid' => 'required_without:fileNo',
+                'year' => 'required|in:2023,2024', // Add this line for year validation
             ],
             [
                 'fileNo.required_without' => 'يرجى ادخال رقم الملف الخاص بالموظف',
-                'civilid.required_without' => 'يرجى ادخال رقم الهوية المدنية الخاص بالموظف'
+                'civilid.required_without' => 'يرجى ادخال رقم الهوية المدنية الخاص بالموظف',
+                'year.required' => 'يرجى اختيار السنة',
+                'year.in' => 'يرجى اختيار السنة',
             ]
         );
         $fileNo = $request->fileNo;
         $civilId = $request->civilid;
+        $selectedYear = $request->year;
         $employee_info =  Employee::where('fileNo', $fileNo)->orWhere('civilid', $civilId)->first();
         if ($employee_info) {
             $currentMonth = $month;
-            $currentYear = 2023;
+            $currentYear = $selectedYear;
             $daysInMonth = Carbon::createFromDate($currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in month
             for ($i = 1; $i <= $daysInMonth; $i++) {
                 $date = Carbon::createFromDate($currentYear, $currentMonth, $i);
@@ -292,9 +295,9 @@ class TakleefController extends Controller
         $currentYear = date('Y');
 
         $records = Takleef::whereYear('date', 2023)
-        ->orderByDesc('created_at')
-        ->orderByDesc('date')
-           
+            ->orderByDesc('created_at')
+            ->orderByDesc('date')
+
             ->get();
 
         $export = new TakleefTable($records);

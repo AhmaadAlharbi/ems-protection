@@ -21,7 +21,7 @@ class SearchTakleef extends Component
     {
 
         // $currentYear = Carbon::now()->year;
-      $currentYear = Carbon::createFromDate(2023, 1, 1)->year;
+        $currentYear = Carbon::createFromDate(2024, 1, 1)->year;
 
 
         $takleefs = Takleef::whereMonth('date', $this->month)

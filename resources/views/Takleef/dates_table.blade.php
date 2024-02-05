@@ -63,7 +63,11 @@
                                             PDF
                                         </a>
 
-
+                                        <a href="{{route('employees.edit', $employee_info->id)}}"
+                                            class="block px-4 py-2 text-white bg-amber-500 rounded-md hover:bg-amber-600">
+                                            <i class="fas fa-edit mr-2"></i>
+                                            إضافة أيام جديدة إلى التكاليف
+                                        </a>
 
 
                                     </div>
