@@ -82,7 +82,7 @@ class TakleefController extends Controller
         return view('Takleef.search', compact('title', 'month'));
     }
 
-    public function search(Request $request, $month)
+    public function search(Request $request, $month, $year)
     {
         $data = $request->validate(
             [
@@ -111,7 +111,10 @@ class TakleefController extends Controller
             }
             $attendance = array();
             foreach ($dates as $date) {
-                $attendance[$date] = Takleef::where('employee_id', $employee_info->id)->whereDate('date', $date)->first();
+                $attendance[$date] = Takleef::where('employee_id', $employee_info->id)
+                    ->whereDate('date', $date)
+                    ->whereYear('date', $currentYear)
+                    ->first();
             }
             $employee_takleef = Takleef::where('employee_id', $employee_info->id)
                 ->where(function ($query) {
@@ -119,10 +122,11 @@ class TakleefController extends Controller
                         ->orWhereNotNull('employee_out');
                 })
                 ->whereMonth('date', $month)
+                ->whereYear('date', $currentYear)
                 ->orderBy('date')
                 ->get();
 
-            return view('Takleef.dates_table', compact('dates', 'employee_info', 'attendance', 'fileNo', 'month', 'employee_takleef'));
+            return view('Takleef.dates_table', compact('selectedYear', 'dates', 'employee_info', 'attendance', 'fileNo', 'month', 'employee_takleef'));
         } else {
             session()->flash('error', '   رقم الملف غير موجود ');
             return redirect()->back();
@@ -163,9 +167,10 @@ class TakleefController extends Controller
             $employee_info->save();
         }
         $currentMonth = $request->month;
-        $daysInMonth = Carbon::createFromDate($this->currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in current momth
+        $currentYear = $request->year;
+        $daysInMonth = Carbon::createFromDate($currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in current momth
         for ($i = 1; $i <= $daysInMonth; $i++) {
-            $date = Carbon::createFromDate($this->currentYear, $currentMonth, $i);
+            $date = Carbon::createFromDate($currentYear, $currentMonth, $i);
             $dates[] = $date->format('Y-m-d');
         }
         $attendance = array();
@@ -173,12 +178,24 @@ class TakleefController extends Controller
             $attendance[$date] = Takleef::where('employee_id', $employee_info->id)->whereDate('date', $date)->first();
         }
         //retrive dates of employee takleef and comare it with the input
-        $takleef_db = Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $request->month)->get();
+        $takleef_db = Takleef::where('employee_id', $employee_info->id)
+            ->whereMonth('date', $request->month)
+            ->whereYear('date', $request->year)
+
+            ->get();
         $employee_in = $request->input('employee_in');
         $employee_out = $request->input('employee_out');
         if (empty($employee_in) && empty($employee_out)) {
-            Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $currentMonth)->update(['employee_in' => null, 'employee_out' => null]);
-            Takleef::where('employee_id', $employee_info->id)->whereMonth('date', $currentMonth)->whereNull('employee_in')->whereNull('employee_out')->delete();
+            Takleef::where('employee_id', $employee_info->id)
+                ->whereMonth('date', $currentMonth)
+                ->whereYear('date', $request->year)
+                ->update(['employee_in' => null, 'employee_out' => null]);
+            Takleef::where('employee_id', $employee_info->id)
+                ->whereMonth('date', $currentMonth)
+                ->whereYear('date', $request->year)
+                ->whereNull('employee_in')
+                ->whereNull('employee_out')
+                ->delete();
             session()->flash('success', 'No data to show | لا يوجد بيانات لعرضها ');
             return redirect()->route('takleef.index');
         }
@@ -189,6 +206,7 @@ class TakleefController extends Controller
             $dates = array_merge($employee_in, $employee_out);
             Takleef::where('employee_id', $employee_info->id)
                 ->whereMonth('date', $request->month)
+                ->whereYear('date', $request->year)
                 ->update(['employee_in' => null, 'employee_out' => null]);
             foreach ($dates as $date) {
                 $attend = Takleef::where('employee_id', $employee_info->id)->where('date', $date)->first();
@@ -218,13 +236,13 @@ class TakleefController extends Controller
                 ->delete();
         }
 
-        return redirect('/takleef/show' . '/' . $employee_info->id . '/' . $request->month)->withInput()->with('success', 'تم التعديل بنجاح')->with(compact('dates', 'employee_info', 'attendance'));
+        return redirect('/takleef/show' . '/' . $employee_info->id . '/' . $request->month . '/' . $request->year)->withInput()->with('success', 'تم التعديل بنجاح')->with(compact('dates', 'employee_info', 'attendance'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Takleef $takleef, $id, $month)
+    public function show(Takleef $takleef, $id, $month, $year)
     {
         $employee_info =  Employee::where('id', $id)->first();
         $employee_takleef = Takleef::where('employee_id', $id)
@@ -233,32 +251,34 @@ class TakleefController extends Controller
                     ->orWhereNotNull('employee_out');
             })
             ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+
             ->orderBy('date')
             ->get();
         if ($employee_takleef->isEmpty()) {
             abort(404, 'Employee takleef not found');
         }
         $currentMonth = $month; //September
-        $daysInMonth = Carbon::createFromDate($this->currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in September
+        $daysInMonth = Carbon::createFromDate($year, $currentMonth, 1)->daysInMonth; // Get the number of days in September
         for ($i = 1; $i <= $daysInMonth; $i++) {
-            $dates[] = Carbon::createFromDate($this->currentYear, $currentMonth, $i);
+            $dates[] = Carbon::createFromDate($year, $currentMonth, $i);
         }
         $firstValue = reset($dates)->format('Y-m-d');;
         $lastValue  =  end($dates)->format('Y-m-d');;
         $employee_info = Takleef::where('employee_id', $employee_info->id)->first();
-        return view('Takleef.show', compact('employee_takleef', 'employee_info', 'firstValue', 'lastValue', 'month'));
+        return view('Takleef.show', compact('year', 'employee_takleef', 'employee_info', 'firstValue', 'lastValue', 'month'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($month, $id)
+    public function edit($month, $id, $year)
     {
         $employee_info =  Employee::where('id', $id)->first();
         $currentMonth = $month;
-        $daysInMonth = Carbon::createFromDate($this->currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in September
+        $daysInMonth = Carbon::createFromDate($year, $currentMonth, 1)->daysInMonth; // Get the number of days in September
         for ($i = 1; $i <= $daysInMonth; $i++) {
-            $date = Carbon::createFromDate($this->currentYear, $currentMonth, $i);
+            $date = Carbon::createFromDate($year, $currentMonth, $i);
             $dates[] = $date->format('Y-m-d');
         }
         $attendance = array();
@@ -267,7 +287,7 @@ class TakleefController extends Controller
             $attendance[$date] = Takleef::where('employee_id', $employee_info->id)->whereDate('date', $date)->first();
         }
         // dd($attendance);
-        return view('Takleef.edit', compact('dates', 'employee_info', 'attendance', 'month'));
+        return view('Takleef.edit', compact('year', 'dates', 'employee_info', 'attendance', 'month'));
     }
 
     /**

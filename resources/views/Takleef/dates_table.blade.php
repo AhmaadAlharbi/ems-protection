@@ -55,7 +55,7 @@
                                             <i class="fas fa-save mr-2"></i>
                                             Save Dates
                                         </button>
-                                        <a href="{{ $employee_takleef->isEmpty() ? '#' : '/takleef/show/' . $employee_info->id . '/' . $month }}"
+                                        <a href="{{ $employee_takleef->isEmpty() ? '#' : '/takleef/show/' . $employee_info->id . '/' . $month .'/'.$selectedYear}}"
                                             class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg mt-2
                                             {{ $employee_takleef->isEmpty() ? 'opacity-50 cursor-not-allowed' : '' }}"
                                             {{ $employee_takleef->isEmpty() ? 'disabled' : '' }}>
@@ -79,6 +79,8 @@
                                         <div class="overflow-x-auto sm:-mx-6 lg:-mx-5 ">
                                             <div class="inline-block min-w-full py-2 sm:px-6 lg:px-20 bg-gray-200">
                                                 <div class="overflow-hidden">
+                                                    <input type="text" name="year" value="{{$selectedYear}}">
+
                                                     <table
                                                         class="w-full text-sm text-center  text-gray-500  table-auto border-collapse border border-slate-400">
                                                         <thead

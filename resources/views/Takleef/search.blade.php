@@ -22,8 +22,8 @@
                     <h1 class="text-center mt-4">{{$title}}</h1>
 
 
-                    <form action="{{ route('takleef.search', $month) }}" method="POST"
-                        class="w-full max-w-md mx-auto mt-5">
+                    <form action="{{ route('takleef.search', [$month, 'YEAR_PLACEHOLDER']) }}" method="POST"
+                        id="searchForm" class="w-full max-w-md mx-auto mt-5">
                         @csrf
 
                         <div class="bg-white rounded shadow-md p-6">
@@ -52,7 +52,6 @@
 
                                     <input type="radio" id="year2024" name="year" value="2024" class="ml-4 mr-2">
                                     <label for="year2024">2024</label>
-
                                 </div>
                                 @if ($errors->has('year'))
                                 <span class="text-red-500 text-sm">{{ $errors->first('year') }}</span>
@@ -68,6 +67,23 @@
                             </div>
                         </div>
                     </form>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const form = document.getElementById('searchForm');
+                            const yearInputs = document.querySelectorAll('input[name="year"]');
+                            
+                            // Add event listener to year inputs to update form action
+                            yearInputs.forEach(input => {
+                                input.addEventListener('change', function () {
+                                    const selectedYear = this.value;
+                                    const action = "{{ route('takleef.search', [$month, 'YEAR_PLACEHOLDER']) }}".replace('YEAR_PLACEHOLDER', selectedYear);
+                                    form.action = action;
+                                });
+                            });
+                        });
+                    </script>
+
 
 
                     <livewire:search-takleef :month="$month" />

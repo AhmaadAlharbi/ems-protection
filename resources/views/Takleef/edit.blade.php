@@ -11,6 +11,7 @@
                                 <div>
                                     <label class="block">الاسم</label>
                                     <input type="hidden" name="month" value="{{$month}}">
+                                    <input type="hidden" name="year" value="{{$year}}">
                                     <input type="hidden" name="employee_id" value="{{$employee_info->id}}">
                                     <input name="name" type="text"
                                         class="border border-gray-300 bg-gray-300 cursor-not-allowed rounded-md p-2 my-2 w-full"
@@ -41,8 +42,9 @@
                                             Save Dates
                                         </button>
 
-                                        <a href="/takleef/show/{{$employee_info->id}}/{{$month}}"
-                                            class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg mt-2">
+                                        <a href="{{'/takleef/show/' . $employee_info->id . '/' . $month .'/'.$year}}"
+                                            class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg mt-2
+                                            'opacity-50 ">
                                             <i class="fas fa-file-pdf mr-2"></i>
                                             PDF
                                         </a>
