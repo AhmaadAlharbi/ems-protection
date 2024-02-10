@@ -21,9 +21,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $departments = Department::all();
-
-        // Share $departments with all views
-        View::share('departments', $departments);
     }
 }

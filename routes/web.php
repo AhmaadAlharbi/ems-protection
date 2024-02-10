@@ -5,6 +5,7 @@ use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TakleefController;
+use App\Models\Takleef;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/takleef/show/{id}/{month}/{year}', [TakleefController::class, 'show'])->name('takleeef.show');
     Route::post('/takleef/search/{month}/{year}', [TakleefController::class, 'search'])->name('takleef.search');
     Route::get('/edit-takleef/{month}/{id}/{year}', [TakleefController::class, 'edit'])->name('edit-takleef');
+    Route::get('/add-single-takleef/{id}/{month}/{year}', [TakleefController::class, 'singleTakleef'])->name('singleTakleef');
+    Route::post('/add-single-takleef', [TakleefController::class, 'storeSingleTakleef'])->name('storeSingleTakleef');
     Route::resource('employees', EmployeeController::class);
     Route::get('/export/{month}', [TakleefController::class, 'exportToExcel'])->name('export');
     Route::resource('holidays', HolidayController::class);

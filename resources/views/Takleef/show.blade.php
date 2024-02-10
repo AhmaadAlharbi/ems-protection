@@ -185,6 +185,11 @@
             .button-group {
                 display: none;
             }
+
+            th.options-column,
+            td.options-column {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -328,7 +333,7 @@
             <p>الرقم المدني:{{$employee_info->employee->civilId}}</p>
             <p>رقم الملف:{{$employee_info->employee->fileNo}}</p>
 
-            <table id="tableId" class="table  text-center table-bordered  table-hover table-responsive">
+            <table id="tableId" class="table text-center table-bordered table-hover table-responsive">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -336,69 +341,93 @@
                         <th>التاريخ</th>
                         <th>حضور</th>
                         <th>انصراف</th>
+                        <th class="options-column">
+                            <input type="checkbox" id="selectAllCheckbox"> تحديد الكل
+                        </th> <!-- Add column for checkboxes and hide button -->
                     </tr>
                 </thead>
-                @php
-                $i = 0;
-                @endphp
-                @foreach($employee_takleef as $x)
-
                 <tbody>
+                    @foreach($employee_takleef as $index => $x)
                     <tr>
-                        @php
-                        $i++;
-                        @endphp
-
-                        <td>{{$i}}</td>
-                        @switch( \Carbon\Carbon::parse($x->date)->englishDayOfWeek)
-
-                        @case('Sunday')
-
+                        <td>{{ $index + 1 }}</td>
                         <td>
+                            @switch(\Carbon\Carbon::parse($x->date)->englishDayOfWeek)
+                            @case('Sunday')
                             الأحد
-                        </td>
-                        @break
-                        @case('Monday')
-                        <td>
+                            @break
+                            @case('Monday')
                             الاثنين
-                        </td>
-                        @break
-                        @case('Tuesday')
-                        <td>
+                            @break
+                            @case('Tuesday')
                             الثلاثاء
-                        </td>
-                        @break
-                        @case('Wednesday')
-                        <td>
+                            @break
+                            @case('Wednesday')
                             الأربعاء
-                        </td>
-                        @break
-                        @case('Thursday')
-                        <td>
+                            @break
+                            @case('Thursday')
                             الخميس
-                        </td>
-                        @break
-                        @case('Friday')
-                        <td>
+                            @break
+                            @case('Friday')
                             الجمعة
-                        </td>
-                        @break
-                        @case('Saturday')
-                        <td>
+                            @break
+                            @case('Saturday')
                             السبت
+                            @break
+                            @endswitch
                         </td>
-                        @break
-                        @endswitch
-
                         <td>{{ $x->date }}</td>
                         <td>{{ isset($x->employee_in) ? $x->employee_in : '-' }}</td>
                         <td>{{ isset($x->employee_out) ? $x->employee_out : '-' }}</td>
+                        <td class="options-column">
+                            <!-- Add checkbox -->
+                            <input type="checkbox" class="row-checkbox ">
+                        </td>
                     </tr>
-
+                    @endforeach
                 </tbody>
-                @endforeach
-
             </table>
+
+            <div class="d-print-none">
+                <button id="hideButton" class="btn btn-success">إخفاء الصفوف المحددة</button>
+                <button onclick="window.print()" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    PDF
+                </button>
+            </div>
+
+            <script>
+                document.getElementById('hideButton').addEventListener('click', function() {
+                    var checkboxes = document.querySelectorAll('.row-checkbox:checked');
+                    checkboxes.forEach(function(checkbox) {
+                        var row = checkbox.closest('tr');
+                        row.style.display = 'none';
+                    });
+            
+                    // Update row numbers for visible rows only
+                    var visibleRows = document.querySelectorAll('tbody tr:not([style="display: none;"])');
+                    visibleRows.forEach(function(row, index) {
+                        row.cells[0].textContent = index + 1;
+                    });
+                });
+                
+    // Select all checkboxes
+    document.getElementById('selectAllCheckbox').addEventListener('change', function() {
+        var checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = this.checked;
+        }, this);
+    });
+            </script>
+
+
+
+
+
+
             <div class="row mt-5">
                 <div class="col">
                     <p>موافقة رئيس القسم</p>

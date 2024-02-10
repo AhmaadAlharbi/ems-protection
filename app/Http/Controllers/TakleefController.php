@@ -305,6 +305,61 @@ class TakleefController extends Controller
     {
         //
     }
+    public function singleTakleef($id, $month, $year)
+    {
+        $employee_info = Employee::findOrFail($id);
+        $currentMonth = $month;
+        $currentYear = $year;
+        $daysInMonth = Carbon::createFromDate($currentYear, $currentMonth, 1)->daysInMonth; // Get the number of days in month
+        $dates = [];
+
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $date = Carbon::createFromDate($currentYear, $currentMonth, $i);
+            $dates[] = $date->format('Y-m-d');
+        }
+
+        return view('takleef.singleTakleef', [
+            'employee_info' => $employee_info,
+            'month' => $month,
+            'year' => $year,
+            'currentMonth' => $currentMonth,
+            'currentYear' => $currentYear,
+            'dates' => $dates
+        ]);
+    }
+    public function storeSingleTakleef(Request $request)
+    {
+        $employee_id = $request->input('employee_id');
+        $name = $request->input('name');
+        $civilId = $request->input('civilId');
+        $fileNo = $request->input('fileNo');
+        $shift_group = $request->input('shift_group');
+        $employee_info = Employee::where('id', $employee_id)->first();
+        $employee_in = $request->input('employee_in');
+        $employee_out = $request->input('employee_out');
+        if (!empty($employee_in) || !empty($employee_out)) {
+            $employee_in = $employee_in ?: array();
+            $employee_out = $employee_out ?: array();
+            $dates = array_merge($employee_in, $employee_out);
+            foreach ($dates as $date) {
+                $attend = Takleef::create([
+                    'employee_id' => $employee_info->id,
+                    'date' => $date,
+                    'employee_in' => in_array($date, $employee_in) ? 'بداية الدوام' : null,
+                    'employee_out' => in_array($date, $employee_out) ? 'نهاية الدوام' : null,
+                    'user_id' => Auth::user()->id
+                ]);
+            }
+        }
+        $attendance = array();
+
+        foreach ($dates as $date) {
+            $attendance[$date] = Takleef::where('employee_id', $employee_info->id)->whereDate('date', $date)->first();
+        }
+
+        return redirect('/takleef/show' . '/' . $employee_info->id . '/' . $request->month . '/' . $request->year)->withInput()->with('success', 'تم التعديل بنجاح')->with(compact('dates', 'employee_info', 'attendance'));
+    }
+
     public function exportToExcel($month)
     {
         // Get the start and end date of the month
