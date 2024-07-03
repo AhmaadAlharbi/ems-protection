@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Exports\TakleefTable;
 use Maatwebsite\Excel\Facades\Excel;
+use Mpdf\Mpdf;
 
 class TakleefController extends Controller
 {
@@ -126,7 +127,7 @@ class TakleefController extends Controller
                 ->orderBy('date')
                 ->get();
 
-            return view('Takleef.dates_table', compact('selectedYear', 'dates', 'employee_info', 'attendance', 'fileNo', 'month', 'employee_takleef'));
+            return view('Takleef.dates_table', compact('selectedYear', 'dates', 'employee_info', 'attendance', 'fileNo', 'month', 'employee_takleef', 'year'));
         } else {
             session()->flash('error', '   رقم الملف غير موجود ');
             return redirect()->back();
@@ -380,4 +381,128 @@ class TakleefController extends Controller
 
         return Excel::download($export, $fileName);
     }
+    public function generatePDF($id, $month, $year)
+    {
+        // Retrieve employee information
+        $employee_info = Employee::findOrFail($id);
+
+        // Retrieve employee takleef for the specified month and year
+        $employee_takleef = Takleef::where('employee_id', $id)
+            ->where(function ($query) {
+                $query->whereNotNull('employee_in')
+                    ->orWhereNotNull('employee_out');
+            })
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->orderBy('date')
+            ->get();
+
+        // If no takleef records found, return 404
+        if ($employee_takleef->isEmpty()) {
+            abort(404, 'Employee takleef not found');
+        }
+
+        // Calculate first and last dates of the month
+        $currentMonth = $month;
+        $daysInMonth = Carbon::createFromDate($year, $currentMonth, 1)->daysInMonth;
+        $dates = [];
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $dates[] = Carbon::createFromDate($year, $currentMonth, $i)->format('Y-m-d');
+        }
+        $firstValue = reset($dates);
+        $lastValue = end($dates);
+
+        // Path to employee image
+        $header_image_path = public_path('images/header-new.png');
+        $footer_image_path = public_path('images/footer-new.png');
+        $header2_image_path = public_path('images/header2.png');
+
+        // Prepare data to pass to the Blade view
+        $data = [
+            'employee_info' => $employee_info,
+            'employee_takleef' => $employee_takleef,
+            'firstValue' => $firstValue,
+            'lastValue' => $lastValue,
+            'month' => $month,
+            'year' => $year,
+            'header_image_path' => $header_image_path,
+            'footer_image_path' => $footer_image_path,
+            'header2_image_path' => $header2_image_path,
+        ];
+
+        // Create MPDF instance
+        $mpdf = new Mpdf([
+            'default_font' => 'Cairo',
+            'mode' => 'utf-8',
+            'format' => 'A4', // Portrait format
+
+        ]);
+
+        // Render the Blade view into HTML
+        $html = view('invoice', $data)->render();
+
+        // Write HTML content to PDF
+        $mpdf->WriteHTML($html);
+
+        // Output PDF as download
+        $mpdf->Output('invoice.pdf', 'D');
+    }
+
+    // public function generatePDF($id, $month, $year)
+    // {
+    //     // Retrieve employee information
+    //     $employee_info = Employee::findOrFail($id);
+
+    //     // Retrieve employee takleef for the specified month and year
+    //     $employee_takleef = Takleef::where('employee_id', $id)
+    //         ->where(function ($query) {
+    //             $query->whereNotNull('employee_in')
+    //                 ->orWhereNotNull('employee_out');
+    //         })
+    //         ->whereMonth('date', $month)
+    //         ->whereYear('date', $year)
+    //         ->orderBy('date')
+    //         ->get();
+
+    //     // If no takleef records found, return 404
+    //     if ($employee_takleef->isEmpty()) {
+    //         abort(404, 'Employee takleef not found');
+    //     }
+
+    //     // Calculate first and last dates of the month
+    //     $currentMonth = $month;
+    //     $daysInMonth = Carbon::createFromDate($year, $currentMonth, 1)->daysInMonth;
+    //     $dates = [];
+    //     for ($i = 1; $i <= $daysInMonth; $i++) {
+    //         $dates[] = Carbon::createFromDate($year, $currentMonth, $i)->format('Y-m-d');
+    //     }
+    //     $firstValue = reset($dates);
+    //     $lastValue = end($dates);
+
+    //     // Prepare data to pass to the Blade view
+    //     $data = [
+    //         'employee_info' => $employee_info,
+    //         'employee_takleef' => $employee_takleef,
+    //         'firstValue' => $firstValue,
+    //         'lastValue' => $lastValue,
+    //         'month' => $month,
+    //         'year' => $year,
+    //     ];
+
+    //     // Create MPDF instance
+    //     $mpdf = new Mpdf([
+    //         'default_font' => 'Cairo',
+    //         'mode' => 'utf-8',
+    //         'format' => 'A4-L' // Landscape format
+    //     ]);
+
+    //     // Render the Blade view into HTML
+    //     $html = view('invoice', $data)->render();
+
+    //     // Write HTML content to PDF
+    //     $mpdf->WriteHTML($html);
+
+    //     // Output PDF as download
+    //     $mpdf->Output('invoice.pdf', 'D');
+    // }
 }

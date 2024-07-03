@@ -59,9 +59,16 @@
                                             class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg mt-2
                                             {{ $employee_takleef->isEmpty() ? 'opacity-50 cursor-not-allowed' : '' }}"
                                             {{ $employee_takleef->isEmpty() ? 'disabled' : '' }}>
-                                            <i class="fas fa-file-pdf mr-2"></i>
-                                            PDF
+
+                                            Show
                                         </a>
+                                        <a href="{{ route('generate-pdf', ['id' => $employee_info->id, 'month' => $month, 'year' => $year]) }}"
+                                            class="bg-amber-400 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-lg mt-2">
+                                            <i class="fas fa-file-pdf mr-2"></i>
+                                            Download
+                                            PDF</a>
+
+
 
                                         {{-- <a
                                             href="{{ route('singleTakleef', ['id' => $employee_info->id, 'month' => $month, 'year' => $selectedYear]) }}"

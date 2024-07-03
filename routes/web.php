@@ -32,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/search/{month}', [TakleefController::class, 'takleefList']);
     Route::resource('takleef', TakleefController::class);
     Route::get('/takleef/show/{id}/{month}/{year}', [TakleefController::class, 'show'])->name('takleeef.show');
+
+    Route::get('/takleef/pdf/{id}/{month}/{year}', [TakleefController::class, 'generatePDF'])->name('generate-pdf');
     Route::post('/takleef/search/{month}/{year}', [TakleefController::class, 'search'])->name('takleef.search');
     Route::get('/edit-takleef/{month}/{id}/{year}', [TakleefController::class, 'edit'])->name('edit-takleef');
     Route::get('/add-single-takleef/{id}/{month}/{year}', [TakleefController::class, 'singleTakleef'])->name('singleTakleef');
