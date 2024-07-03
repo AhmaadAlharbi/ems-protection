@@ -440,12 +440,14 @@ class TakleefController extends Controller
 
         // Render the Blade view into HTML
         $html = view('invoice', $data)->render();
-
+        // Determine PDF filename based on employee's name
+        $pdfFileName = $employee_info->name . '_report_' . $year . '_' . $month . '.pdf';
         // Write HTML content to PDF
         $mpdf->WriteHTML($html);
 
         // Output PDF as download
-        $mpdf->Output('invoice.pdf', 'D');
+        // $mpdf->Output('invoice.pdf', 'D');
+        $mpdf->Output($pdfFileName, 'D');
     }
 
     // public function generatePDF($id, $month, $year)
