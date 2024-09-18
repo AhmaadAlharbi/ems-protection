@@ -85,23 +85,43 @@ class TakleefController extends Controller
 
     public function search(Request $request, $month, $year)
     {
-        $data = $request->validate(
-            [
-                'fileNo' => 'required_without:civilid',
-                'civilid' => 'required_without:fileNo',
-                'year' => 'required|in:2023,2024', // Add this line for year validation
-            ],
-            [
-                'fileNo.required_without' => 'يرجى ادخال رقم الملف الخاص بالموظف',
-                'civilid.required_without' => 'يرجى ادخال رقم الهوية المدنية الخاص بالموظف',
-                'year.required' => 'يرجى اختيار السنة',
-                'year.in' => 'يرجى اختيار السنة',
-            ]
-        );
+        // $data = $request->validate(
+        //     [
+        //         // 'fileNo' => 'required_without:civilid|exists:employees,fileNo',
+        //         'civilId' => 'required_without:fileNo|exists:employees,civilId',
+        //         'year' => 'required|in:2023,2024', // Validate year as either 2023 or 2024
+        //     ],
+        //     [
+        //         'fileNo.required_without' => 'يرجى ادخال رقم الملف الخاص بالموظف أو رقم الهوية المدنية',
+        //         'civilid.required_without' => 'يرجى ادخال رقم الهوية المدنية الخاص بالموظف أو رقم الملف',
+        //         'fileNo.exists' => 'رقم الملف غير موجود',
+        //         'civilid.exists' => 'رقم الهوية المدنية غير موجود',
+        //         'year.required' => 'يرجى اختيار السنة',
+        //         'year.in' => 'يرجى اختيار السنة الصحيحة (2023 أو 2024)',
+        //     ]
+        // );
         $fileNo = $request->fileNo;
-        $civilId = $request->civilid;
+        $civilId = $request->civilId;
         $selectedYear = $request->year;
-        $employee_info =  Employee::where('fileNo', $fileNo)->orWhere('civilid', $civilId)->first();
+        $employee_info =  Employee::where('fileNo', $fileNo)->orWhere('civilId', $civilId)->first();
+
+
+        // Retrieve fileNo, civilId, and year from request
+        $fileNo = $request->input('fileNo');
+        $civilId = $request->input('civilId');
+        $selectedYear = $request->input('year');
+
+        // Query the employee by fileNo or civilId
+        $employee_info = Employee::where('fileNo', $fileNo)
+            ->orWhere('civilId', $civilId)
+            ->first();
+
+        if (!$employee_info) {
+            return redirect()->back()->withErrors(['error' => 'الموظف غير موجود']);
+        }
+
+        // Further processing...
+
         if ($employee_info) {
             $currentMonth = $month;
             $currentYear = $selectedYear;
@@ -120,7 +140,8 @@ class TakleefController extends Controller
             $employee_takleef = Takleef::where('employee_id', $employee_info->id)
                 ->where(function ($query) {
                     $query->whereNotNull('employee_in')
-                        ->orWhereNotNull('employee_out');
+                        ->orWhereNotNull('employee_out')
+                        ->orWhereNotNull('in_confirmation');
                 })
                 ->whereMonth('date', $month)
                 ->whereYear('date', $currentYear)
@@ -182,11 +203,11 @@ class TakleefController extends Controller
         $takleef_db = Takleef::where('employee_id', $employee_info->id)
             ->whereMonth('date', $request->month)
             ->whereYear('date', $request->year)
-
             ->get();
         $employee_in = $request->input('employee_in');
         $employee_out = $request->input('employee_out');
-        if (empty($employee_in) && empty($employee_out)) {
+        $in_confirmation = $request->input('in_confirmation');
+        if (empty($employee_in) && empty($employee_out) && empty($in_confirmation)) {
             Takleef::where('employee_id', $employee_info->id)
                 ->whereMonth('date', $currentMonth)
                 ->whereYear('date', $request->year)
@@ -201,14 +222,15 @@ class TakleefController extends Controller
             return redirect()->route('takleef.index');
         }
         // check if employee_in array is not empty
-        if (!empty($employee_in) || !empty($employee_out)) {
+        if (!empty($employee_in) || !empty($employee_out) || !empty($in_confirmation)) {
             $employee_in = $employee_in ?: array();
             $employee_out = $employee_out ?: array();
-            $dates = array_merge($employee_in, $employee_out);
+            $in_confirmation = $in_confirmation ?: array();
+            $dates = array_merge($employee_in, $employee_out, $in_confirmation);
             Takleef::where('employee_id', $employee_info->id)
                 ->whereMonth('date', $request->month)
                 ->whereYear('date', $request->year)
-                ->update(['employee_in' => null, 'employee_out' => null]);
+                ->update(['employee_in' => null, 'employee_out' => null, 'in_confirmation' => null]);
             foreach ($dates as $date) {
                 $attend = Takleef::where('employee_id', $employee_info->id)->where('date', $date)->first();
                 if (!$attend) {
@@ -217,6 +239,7 @@ class TakleefController extends Controller
                         'date' => $date,
                         'employee_in' => in_array($date, $employee_in) ? 'بداية الدوام' : null,
                         'employee_out' => in_array($date, $employee_out) ? 'نهاية الدوام' : null,
+                        'in_confirmation' => in_array($date, $in_confirmation) ? 'حضور' : null,
                         'user_id' => Auth::user()->id
                     ]);
                 } else {
@@ -225,6 +248,7 @@ class TakleefController extends Controller
                         'date' => $date,
                         'employee_in' => in_array($date, $employee_in) ? 'بداية الدوام' : null,
                         'employee_out' => in_array($date, $employee_out) ? 'نهاية الدوام' : null,
+                        'in_confirmation' => in_array($date, $in_confirmation) ? 'حضور' : null,
                         'user_id' => Auth::user()->id
 
                     ]);
@@ -234,6 +258,7 @@ class TakleefController extends Controller
             Takleef::where('employee_id', $employee_info->id)
                 ->whereNull('employee_in')
                 ->whereNull('employee_out')
+                ->whereNull('in_confirmation')
                 ->delete();
         }
 
@@ -247,10 +272,10 @@ class TakleefController extends Controller
     {
         $employee_info =  Employee::where('id', $id)->first();
         $employee_takleef = Takleef::where('employee_id', $id)
-            ->where(function ($query) {
-                $query->whereNotNull('employee_in')
-                    ->orWhereNotNull('employee_out');
-            })
+            // ->where(function ($query) {
+            //     $query->whereNotNull('employee_in')
+            //         ->orWhereNotNull('employee_out');
+            // })
             ->whereMonth('date', $month)
             ->whereYear('date', $year)
 
@@ -390,7 +415,8 @@ class TakleefController extends Controller
         $employee_takleef = Takleef::where('employee_id', $id)
             ->where(function ($query) {
                 $query->whereNotNull('employee_in')
-                    ->orWhereNotNull('employee_out');
+                    ->orWhereNotNull('employee_out')
+                    ->orWhereNotNull('in_confirmation');
             })
             ->whereMonth('date', $month)
             ->whereYear('date', $year)

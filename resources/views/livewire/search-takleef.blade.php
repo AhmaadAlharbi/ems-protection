@@ -17,8 +17,9 @@
                 <th class="border border-slate-300 py-5">employee</th>
                 <th class="border border-slate-300 py-5">File No</th>
                 <th class="border border-slate-300 py-5">date</th>
-                <th class="border border-slate-300 py-5">in</th>
-                <th class="border border-slate-300 py-5">out</th>
+                <th class="border border-slate-300 py-5">دخول</th>
+                <th class="border border-slate-300 py-5">بصمة التواجد</th>
+                <th class="border border-slate-300 py-5">خروج</th>
                 <th class="border border-slate-300 py-5">added by</th>
                 <th class="border border-slate-300 py-5">created at</th>
             </tr>
@@ -31,6 +32,7 @@
                 <td class="border border-slate-300 py-3">{{$takleef->employee->fileNo}}</td>
                 <td class="border border-slate-300 py-3">{{$takleef->date}}</td>
                 <td class="border border-slate-300 py-3">{{$takleef->employee_in}}</td>
+                <td class="border border-slate-300 py-3">{{$takleef->in_confirmation}}</td>
                 <td class="border border-slate-300 ...">{{$takleef->employee_out}}</td>
                 <td class="border border-slate-300 py-3">{{$takleef->user->name}}</td>
                 <td class="border border-slate-300 py-3">{{$takleef->created_at->format('Y-m-d') }}</td>

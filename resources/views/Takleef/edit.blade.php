@@ -75,6 +75,9 @@
                                                                 <th class=" py-3 border-b border-gray-300 bg-gray-50 ">
                                                                     حضور
                                                                 </th>
+                                                                <th class=" py-3 border-b border-gray-300 bg-gray-50 ">
+                                                                    بصمة اثبات التواجد
+                                                                </th>
                                                                 <th class=" py-3 border-b border-gray-300 bg-gray-50">
                                                                     انصراف
                                                                 </th>
@@ -126,7 +129,19 @@
                                                                         class="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
                                                                     @endif
                                                                 </td>
-
+                                                                <td class="py-2 border-b bg-red-400 border-gray-300">
+                                                                    @if(is_array($attendance) && array_key_exists($date,
+                                                                    $attendance) && $attendance[$date] &&
+                                                                    $attendance[$date]->in_confirmation === 'حضور')
+                                                                    <input type="checkbox" name="in_confirmation[]"
+                                                                        value="{{ $date }}" checked
+                                                                        class="form-checkbox h-4 w-4 text-green-600 transition duration-150 ease-in-out">
+                                                                    @else
+                                                                    <input type="checkbox" name="in_confirmation[]"
+                                                                        value="{{ $date }}"
+                                                                        class="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                                                                    @endif
+                                                                </td>
 
                                                                 <td class="py-2 border-b border-gray-300">
                                                                     @if(is_array($attendance) && in_array($date,

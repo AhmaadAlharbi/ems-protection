@@ -213,6 +213,7 @@
                         <th style="padding: 10px; border: 1px solid #000;">اليوم</th>
                         <th style="padding: 10px; border: 1px solid #000;">التاريخ</th>
                         <th style="padding: 10px; border: 1px solid #000;">حضور</th>
+                        <th style="padding: 10px; border: 1px solid #000;">اثبات التواجد</th>
                         <th style="padding: 10px; border: 1px solid #000;">انصراف</th>
                     </tr>
                 </thead>
@@ -248,6 +249,10 @@
                         <td style="padding: 10px; border: 1px solid #000;">{{ $x->date }}</td>
                         <td style="padding: 10px; border: 1px solid #000;">{{ isset($x->employee_in) ? $x->employee_in :
                             '-' }}</td>
+                        <td style="padding: 10px; border: 1px solid #000;">{{ isset($x-> in_confirmation) ? $x->
+                            in_confirmation :
+                            '-' }}</td>
+
                         <td style="padding: 10px; border: 1px solid #000;">{{ isset($x->employee_out) ? $x->employee_out
                             : '-' }}</td>
                     </tr>

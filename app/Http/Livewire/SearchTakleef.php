@@ -28,7 +28,8 @@ class SearchTakleef extends Component
             ->whereYear('date', $currentYear)
             ->where(function ($query) {
                 $query->whereNotNull('employee_in')
-                    ->orWhereNotNull('employee_out');
+                    ->orWhereNotNull('employee_out')
+                    ->orWhereNotNull('in_confirmation');
             })
             ->whereHas('employee', function ($query) {
                 $query->where('fileNo', 'like', '%' . $this->search . '%');

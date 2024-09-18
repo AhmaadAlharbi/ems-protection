@@ -346,6 +346,7 @@
                         <th>اليوم</th>
                         <th>التاريخ</th>
                         <th>حضور</th>
+                        <th>اثبات التواجد</th>
                         <th>انصراف</th>
                         <th class="options-column">
                             <input type="checkbox" id="selectAllCheckbox"> تحديد الكل
@@ -383,6 +384,7 @@
                         </td>
                         <td>{{ $x->date }}</td>
                         <td>{{ isset($x->employee_in) ? $x->employee_in : '-' }}</td>
+                        <td>{{ isset($x->in_confirmation) ? $x->in_confirmation : '-' }}</td>
                         <td>{{ isset($x->employee_out) ? $x->employee_out : '-' }}</td>
                         <td class="options-column">
                             <!-- Add checkbox -->
