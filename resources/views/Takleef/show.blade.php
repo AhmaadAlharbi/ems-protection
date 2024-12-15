@@ -20,11 +20,7 @@
 
         }
 
-        #print {
-            background: url("/images/background.png");
-            background-size: cover;
-            background-position: center;
-        }
+
 
 
         * {
@@ -236,7 +232,8 @@
 
     <div class="row  border-dark text-center mx-auto d-block">
         <div id="print" class="row page ">
-            <img class="header-img" src="{{ asset('images/header.png') }}" alt="Image">
+            {{-- <img class="header-img" src="{{ asset('images/header.png') }}" alt="Image"> --}}
+            <img class="header-img" src="{{ asset('images/new-header-1.png') }}" alt="Image">
             <h5 style="margin-top:40px;" class=" font-weight-bold mb-3">قطاع شبكات النقل الكهربائية</h5>
             <h5 class="font-weight-bold mb-3">تكليف بمهمة خارج مقر العمل</h5>
             <div class="row mb-3 mt-3 ">
@@ -279,7 +276,7 @@
 
         {{-- page2 --}}
         <div class="row page page-break mx-auto d-block">
-            <img style="margin-top:30px;" src="{{ asset('images/header2.png') }}" alt="Image">
+            <img class="header-img" src="{{ asset('images/new-header-1.png') }}" alt="Image">
             <h5 class=" font-weight-bold mb-3 mt-5">قطاع شبكات النقل الكهربائية</h5>
             <h5 class="font-weight-bold mb-3">تكليف بمهمة خارج مقر العمل</h5>
             <div class="row mb-3 ">
@@ -320,7 +317,7 @@
 
         </div>
         {{-- page3 --}}
-        <img style="margin-top:40px;" src="{{ asset('images/header2.png') }}" alt="Image">
+        <img class="header-img" src="{{ asset('images/new-header-1.png') }}" alt="Image">
         <h5 class=" font-weight-bold mb-3 mt-5">قطاع شبكات النقل الكهربائية</h5>
         <h5 class="font-weight-bold mb-3">تكليف بمهمة خارج مقر العمل</h5>
         <div class="row mb-3 ">
@@ -441,7 +438,7 @@
                     <p>موافقة رئيس القسم</p>
                 </div>
                 <div class="col">
-                    <p>اعتماد مدير الادراة</p>
+                    <p>اعتماد مدير الإدارة</p>
 
                 </div>
             </div>

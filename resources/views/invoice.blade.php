@@ -95,7 +95,7 @@
 <body class="text-center">
     <div id="print" class="page text-center">
         <div class="header">
-            <img src="{{ $header_image_path }}" alt="Header Image">
+            <img class="header-img" src="{{ asset('images/new-header-1.png') }}" alt="Image">
         </div>
 
         <div class="content">

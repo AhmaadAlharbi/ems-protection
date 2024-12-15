@@ -439,9 +439,9 @@ class TakleefController extends Controller
         $lastValue = end($dates);
 
         // Path to employee image
-        $header_image_path = public_path('images/header-new.png');
+        $header_image_path = public_path('images/new-header-1.png');
         $footer_image_path = public_path('images/footer-new.png');
-        $header2_image_path = public_path('images/header2.png');
+        $header2_image_path = public_path('images/new-header-1.png');
 
         // Prepare data to pass to the Blade view
         $data = [
