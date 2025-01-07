@@ -32,11 +32,13 @@ class SearchTakleef extends Component
                     ->orWhereNotNull('in_confirmation');
             })
             ->whereHas('employee', function ($query) {
-                $query->where('fileNo', 'like', '%' . $this->search . '%');
+                $query->where('fileNo', 'like', '%' . $this->search . '%')
+                    ->orWhere('name', 'like', '%' . $this->search . '%'); // Add username search
             })
             ->orderByDesc('created_at')
             ->orderBy('date')
-            ->paginate(10);
+            ->paginate(20);
+
 
         // $takleefs = Employee::whereHas('takleefList', function ($query) {
         //     $query->where('fileNo', 'like', '%' . $this->search . '%');

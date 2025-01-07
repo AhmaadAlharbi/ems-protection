@@ -20,8 +20,11 @@ class SearchEmployees extends Component
     public function render()
     {
         $employees = Employee::where('fileNo', 'like', '%' . $this->search . '%')
+            ->orWhere('name', 'like', $this->search . '%') // Match names starting with the search input
             ->orderBy('fileNo')
             ->paginate(15);
+
+
 
         return view('livewire.search-employees', [
             'employees' => $employees,

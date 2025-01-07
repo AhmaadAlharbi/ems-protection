@@ -85,21 +85,11 @@ class TakleefController extends Controller
 
     public function search(Request $request, $month, $year)
     {
-        // $data = $request->validate(
-        //     [
-        //         // 'fileNo' => 'required_without:civilid|exists:employees,fileNo',
-        //         'civilId' => 'required_without:fileNo|exists:employees,civilId',
-        //         'year' => 'required|in:2023,2024', // Validate year as either 2023 or 2024
-        //     ],
-        //     [
-        //         'fileNo.required_without' => 'يرجى ادخال رقم الملف الخاص بالموظف أو رقم الهوية المدنية',
-        //         'civilid.required_without' => 'يرجى ادخال رقم الهوية المدنية الخاص بالموظف أو رقم الملف',
-        //         'fileNo.exists' => 'رقم الملف غير موجود',
-        //         'civilid.exists' => 'رقم الهوية المدنية غير موجود',
-        //         'year.required' => 'يرجى اختيار السنة',
-        //         'year.in' => 'يرجى اختيار السنة الصحيحة (2023 أو 2024)',
-        //     ]
-        // );
+        $request->validate([
+            'year' => 'required|integer|min:2024|max:' . date('Y'),
+            'fileNo' => 'nullable|required_without:civilId|exists:employees,fileNo',
+            'civilId' => 'nullable|required_without:fileNo|exists:employees,civilId',
+        ]);
         $fileNo = $request->fileNo;
         $civilId = $request->civilId;
         $selectedYear = $request->year;
@@ -395,7 +385,7 @@ class TakleefController extends Controller
         // Get the records within the specified month
         $currentYear = date('Y');
 
-        $records = Takleef::whereYear('date', 2023)
+        $records = Takleef::whereYear('date', 2024)
             ->orderByDesc('created_at')
             ->orderByDesc('date')
 
